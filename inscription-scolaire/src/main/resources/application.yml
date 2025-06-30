@@ -1,0 +1,59 @@
+#configure server
+server:
+  port: 8091
+
+
+#configure spring datasource,jpa, mail and servlet
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inscription_db
+    username: postgres
+    password: sandra
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: localhost
+    port: 1025
+    username: mailsender
+    password: password
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+#configure application
+application:
+  security:
+    jwt:
+      secret-key: C003FA3DC88493379ABFCC2779594D1MYSECRETKEY1233ADMIN
+      expiration: 900000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+
+#configure springdoc (swagger)
+springdoc:
+  default-produces-media-type: application/json
+
+
