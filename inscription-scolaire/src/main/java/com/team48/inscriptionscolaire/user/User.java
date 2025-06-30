@@ -1,9 +1,11 @@
 package com.team48.inscriptionscolaire.user;
 
 
+import com.team48.inscriptionscolaire.notification.Notification;
 import com.team48.inscriptionscolaire.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,16 +14,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
-@Builder
+@SuperBuilder
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name =  "role")
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 
@@ -30,7 +34,7 @@ public class User implements UserDetails, Principal {
     private Integer id;
     private String firstname;
     private String lastname;
-    private LocalDate dateOfBirth;
+
     @Column(unique = true)
     private String email;
     private String password;
@@ -39,6 +43,9 @@ public class User implements UserDetails, Principal {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
 
 
     @CreatedDate
