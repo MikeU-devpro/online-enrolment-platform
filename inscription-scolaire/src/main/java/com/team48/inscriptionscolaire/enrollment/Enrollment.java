@@ -4,7 +4,6 @@ import com.team48.inscriptionscolaire.common.BaseEntity;
 import com.team48.inscriptionscolaire.document.Document;
 import com.team48.inscriptionscolaire.program.Program;
 import com.team48.inscriptionscolaire.student.Student;
-import com.team48.inscriptionscolaire.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -20,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Enrollment extends BaseEntity {
-    private LocalDateTime submissionDate;
+    private LocalDateTime submissionDate = LocalDateTime.now();
     private StatusSubmission status;
     private LocalDateTime validationDate;
 

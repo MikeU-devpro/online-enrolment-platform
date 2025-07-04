@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
@@ -22,20 +22,17 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: localhost
-    port: 1025
-    username: mailsender
-    password: password
+    host: smtp.gmail.com
+    port: 587
+    username: lenguesandra@gmail.com
+    password: ohqh nkcm ebpe lplz
     properties:
       mail:
         smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enable: true
-          connectiontimeout: 5000
-          timeout: 3000
-          writetimeout: 5000
+          auth: true
+          starttls:
+            enable: true
+
   servlet:
     multipart:
       max-file-size: 50MB

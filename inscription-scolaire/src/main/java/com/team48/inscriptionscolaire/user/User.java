@@ -25,7 +25,7 @@ import java.util.List;
 @SuperBuilder
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name =  "role")
+@DiscriminatorColumn(name = "user_type")
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 
@@ -63,9 +63,9 @@ public class User implements UserDetails, Principal {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Since a user has one role, create a list with one authority
-        return Collections.singletonList(new SimpleGrantedAuthority(role.getName()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.getName()));
     }
+
 
     @Override
     public String getPassword() {

@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Role {
+public class  Role {
 
     @Id
     @GeneratedValue

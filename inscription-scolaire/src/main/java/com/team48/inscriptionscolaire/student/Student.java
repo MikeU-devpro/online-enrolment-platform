@@ -16,7 +16,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@DiscriminatorValue("STUDENT")
+@Table(name = "students")
+@DiscriminatorValue("STUDENT")
 public class Student extends User {
     private LocalDate dateOfBirth;
     private String address;

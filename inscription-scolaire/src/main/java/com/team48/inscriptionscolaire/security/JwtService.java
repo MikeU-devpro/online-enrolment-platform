@@ -17,12 +17,16 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
+
 @Service
 public class JwtService {
+
     @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration ;
+    private long jwtExpiration;
+
     @Value("${application.security.jwt.secret-key}")
-    private String secretKey ;
+    private String secretKey;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,13 +38,12 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()  // ✅ Updated method for JJWT 0.12.6
-                .verifyWith((SecretKey) getSignInKey())  // ✅ `verifyWith()` replaces `setSigningKey()`
-                .build()  // ✅ New requirement in JJWT 0.12.6
-                .parseSignedClaims(token)  // ✅ Use `parseSignedClaims()` instead of `parseClaimsJws()`
-                .getPayload();  // ✅ Extract claims correctly
+        return Jwts.parser()
+                .verifyWith((SecretKey) getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
-
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -53,22 +56,21 @@ public class JwtService {
     private String buildToken(Map<String, Object> claims, UserDetails userDetails, long jwtExpiration) {
         String authorities = userDetails.getAuthorities()
                 .stream()
-                .map(GrantedAuthority::getAuthority)
+                .map(GrantedAuthority::getAuthority) // e.g., ROLE_ADMIN
                 .collect(Collectors.joining(","));
 
         claims.put("roles", authorities);
 
-        return  Jwts.builder()
-                .claims(claims)  // ✅ `setClaims()` → `claims()` in JJWT 0.12.6
-                .subject(userDetails.getUsername())  // ✅ `setSubject()` → `subject()`
-                .issuedAt(new Date(System.currentTimeMillis()))  // ✅ `setIssuedAt()` → `issuedAt()`
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))  // ✅ `setExpiration()` → `expiration()`
-                .signWith(getSignInKey())  // ✅ New `signWith()` method requires an algorithm
+        return Jwts.builder()
+                .claims(claims)
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSignInKey(), HS256) // ✅ Solution : ajouter l'algorithme ici
                 .compact();
     }
 
-
-    public boolean isTokenValid(String token, UserDetails userDetails){
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
@@ -80,7 +82,6 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
