@@ -6,8 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
-public class EnrollmentDtoRequest {
-    private Integer programId;
+public class EnrollmentStepDto {
     private int currentStep;
     private PersonalInfoDto personalInfo;
     private AcademicInfoDto academicInfo;

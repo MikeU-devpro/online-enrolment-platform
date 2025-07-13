@@ -4,6 +4,7 @@ import com.team48.inscriptionscolaire.common.BaseEntity;
 import com.team48.inscriptionscolaire.document.Document;
 import com.team48.inscriptionscolaire.program.Program;
 import com.team48.inscriptionscolaire.student.Student;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -33,4 +34,13 @@ public class Enrollment extends BaseEntity {
     private Program program;
 
     //stepProgress
+
+    @Embedded
+    private PersonalInfo personalInfo;
+
+    @Embedded
+    private AcademicInfo academicInfo;
+
+    private int stepCompleted;
+
 }
