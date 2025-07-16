@@ -1,9 +1,13 @@
 package com.team48.inscriptionscolaire.auth;
 
+import com.team48.inscriptionscolaire.admin.Admin;
 import com.team48.inscriptionscolaire.email.EmailService;
 import com.team48.inscriptionscolaire.email.EmailTemplateName;
 import com.team48.inscriptionscolaire.role.RoleRepository;
 import com.team48.inscriptionscolaire.security.JwtService;
+import com.team48.inscriptionscolaire.student.Gender;
+import com.team48.inscriptionscolaire.student.MaritalStatus;
+import com.team48.inscriptionscolaire.student.Student;
 import com.team48.inscriptionscolaire.user.Token;
 import com.team48.inscriptionscolaire.user.TokenRepository;
 import com.team48.inscriptionscolaire.user.User;
@@ -17,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +42,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
 
     public void register(RegistrationRequest request) throws MessagingException {
-        // Validate role
         if (!List.of("STUDENT", "ADMIN").contains(request.getRoleName())) {
             throw new IllegalArgumentException("Invalid role specified");
         }
@@ -45,18 +49,47 @@ public class AuthenticationService {
         var userRole = roleRepository.findByName(request.getRoleName())
                 .orElseThrow(() -> new IllegalStateException("ROLE " + request.getRoleName() + " was not initialized"));
 
-        var user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .accountLocked(false)
-                .enabled(false) // Account requires activation
-                .role(userRole) // Set the single role
-                .build();
+        User user;
+
+        if ("STUDENT".equals(request.getRoleName())) {
+            user = Student.builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .accountLocked(false)
+                    .enabled(false)
+                    .role(userRole)
+                    .dateOfBirth(LocalDate.now()) // Valeur par défaut, à mettre à jour plus tard
+                    .address("Tradex Emana") // Valeur par défaut
+                    .phoneNumber("+237 69910023") // Valeur par défaut
+                    .gender(Gender.FEMININ) // Valeur par défaut
+                    .nationality("Cameroonian") // Valeur par défaut
+                    .maritalStatus(MaritalStatus.SINGLE) // Valeur par défaut
+                    .desiredAcademicYear(LocalDate.now().getYear()) // Valeur par défaut
+                    .intendedFieldOfStudy("Computer Science") // Valeur par défaut
+                    .build();
+        } else { // ADMIN
+            user = Admin.builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .accountLocked(false)
+                    .enabled(false)
+                    .role(userRole)
+                    .internalCode(generateInternalCode())
+                    .departement("administration")
+                    .build();
+        }
 
         userRepository.save(user);
         sendValidationEmail(user);
+    }
+
+    private String generateInternalCode() {
+        // Implémentez une logique de génération de code interne
+        return "ADM-" + new SecureRandom().nextInt(1000, 9999);
     }
     //it will generate a new token
     private void sendValidationEmail(User user) throws MessagingException {

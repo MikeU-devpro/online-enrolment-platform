@@ -10,13 +10,15 @@ import java.util.List;
 public class EnrollmentDtoResponse {
     private Integer id;
     private Integer programId;
+    private Integer studentId;
     private String programName;
     private StatusSubmission status;
-    private LocalDateTime creationDate;
+    private LocalDateTime createdDate;
     private LocalDateTime submissionDate;
     private LocalDateTime validationDate;
     private int currentStep;
     private PersonalInfoDto personalInfo;
     private AcademicInfoDto academicInfo;
     private List<Document> documents;
+    //private EnrollmentStepDto enrollmentStepDto;
 }

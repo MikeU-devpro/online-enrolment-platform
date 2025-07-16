@@ -25,7 +25,7 @@ import java.util.List;
 @SuperBuilder
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type")
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 

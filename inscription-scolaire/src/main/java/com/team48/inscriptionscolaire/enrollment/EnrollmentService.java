@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,10 +24,7 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final ProgramRepository programRepository;
     private final UserRepository userRepository;
-
-    private final EnrollmentMapper enrollmentMapper;
     private final DocumentService documentService;
-
 
     @Transactional
     public EnrollmentDtoResponse startEnrollment(EnrollmentDtoRequest dto) {
@@ -66,40 +62,43 @@ public class EnrollmentService {
                 throw new IllegalArgumentException("Invalid step number");
         }
 
-        return enrollmentMapper.toDto(enrollmentRepository.save(existingEnrollment));
+        return convertToDto(enrollmentRepository.save(existingEnrollment));
     }
 
-    private void completeEnrollment(Enrollment existingEnrollment) {
-        if (existingEnrollment.getStepCompleted() < 3) {
+    private void completeEnrollment(Enrollment enrollment) {
+        if (enrollment.getStepCompleted() < 3) {
             throw new IllegalStateException("All steps must be completed before submission");
         }
 
-        if (existingEnrollment.getPersonalInfo() == null ||
-                existingEnrollment.getAcademicInfo() == null ||
-                existingEnrollment.getDocuments() == null ||
-                existingEnrollment.getDocuments().isEmpty()) {
+        if (enrollment.getPersonalInfo() == null ||
+                enrollment.getAcademicInfo() == null ||
+                enrollment.getDocuments() == null ||
+                enrollment.getDocuments().isEmpty()) {
             throw new IllegalStateException("All required information must be provided");
         }
 
-        if (existingEnrollment.getDocuments().stream()
-                .noneMatch(doc -> doc.getType() != null && doc.getFileData() != null)) {
-            throw new IllegalStateException("At least one valid document must be provided");
-        }
-
-        existingEnrollment.setStatus(StatusSubmission.PENDING);
-        existingEnrollment.setSubmissionDate(LocalDateTime.now());
-        existingEnrollment.setStepCompleted(4);
-
-        log.info("Enrollment {} submitted for validation", existingEnrollment.getId());
+        enrollment.setStatus(StatusSubmission.PENDING);
+        enrollment.setSubmissionDate(LocalDateTime.now());
+        enrollment.setStepCompleted(4);
     }
 
     private void updatePersonalInfo(Enrollment enrollment, PersonalInfoDto personalInfoDto) {
-        enrollment.setPersonalInfo(enrollmentMapper.toPersonalInfoEntity(personalInfoDto));
+        PersonalInfo personalInfo = new PersonalInfo();
+        personalInfo.setFirstName(personalInfoDto.getFirstName());
+        personalInfo.setLastName(personalInfoDto.getLastName());
+        //personalInfo.setDateOfBirth(personalInfoDto.getDateOfBirth());
+        personalInfo.setAddress(personalInfoDto.getAddress());
+        personalInfo.setPhoneNumber(personalInfoDto.getPhoneNumber());
+        enrollment.setPersonalInfo(personalInfo);
         enrollment.setStepCompleted(1);
     }
 
     private void updateAcademicInfo(Enrollment enrollment, AcademicInfoDto academicInfoDto) {
-        enrollment.setAcademicInfo(enrollmentMapper.toAcademicInfoEntity(academicInfoDto));
+        AcademicInfo academicInfo = new AcademicInfo();
+        academicInfo.setPreviousSchool(academicInfoDto.getPreviousSchool());
+        academicInfo.setDiploma(academicInfoDto.getDiploma());
+        academicInfo.setGraduationYear(academicInfoDto.getGraduationYear());
+        enrollment.setAcademicInfo(academicInfo);
         enrollment.setStepCompleted(2);
     }
 
@@ -107,7 +106,6 @@ public class EnrollmentService {
         try {
             for (MultipartFile document : documents) {
                 documentService.uploadImage(document);
-                // Document references will be associated through DocumentService
             }
             enrollment.setStepCompleted(3);
         } catch (IOException e) {
@@ -117,7 +115,7 @@ public class EnrollmentService {
 
     public EnrollmentDtoResponse getEnrollmentById(Integer enrollmentId) {
         return enrollmentRepository.findById(enrollmentId)
-                .map(enrollmentMapper::toDto)
+                .map(this::convertToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + enrollmentId));
     }
 
@@ -128,14 +126,14 @@ public class EnrollmentService {
 
         return enrollmentRepository.findByStudentId(student.getId())
                 .stream()
-                .map(enrollmentMapper::toDto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public List<EnrollmentDtoResponse> getEnrollmentsByProgram(Integer programId) {
         return enrollmentRepository.findByProgramId(programId)
                 .stream()
-                .map(enrollmentMapper::toDto)
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -151,6 +149,47 @@ public class EnrollmentService {
         enrollment.setStatus(StatusSubmission.APPROVED);
         enrollment.setValidationDate(LocalDateTime.now());
 
-        return enrollmentMapper.toDto(enrollmentRepository.save(enrollment));
+        return convertToDto(enrollmentRepository.save(enrollment));
+    }
+
+    private EnrollmentDtoResponse convertToDto(Enrollment enrollment) {
+        EnrollmentDtoResponse dto = new EnrollmentDtoResponse();
+        dto.setId(enrollment.getId());
+        dto.setStatus(enrollment.getStatus());
+        dto.setCreatedDate(enrollment.getCreatedDate());
+        dto.setSubmissionDate(enrollment.getSubmissionDate());
+        dto.setValidationDate(enrollment.getValidationDate());
+        //dto.setStepCompleted(enrollment.getStepCompleted());
+
+        if (enrollment.getPersonalInfo() != null) {
+            dto.setPersonalInfo(convertPersonalInfoToDto(enrollment.getPersonalInfo()));
+        }
+
+        if (enrollment.getAcademicInfo() != null) {
+            dto.setAcademicInfo(convertAcademicInfoToDto(enrollment.getAcademicInfo()));
+        }
+
+        dto.setProgramId(enrollment.getProgram().getId());
+        dto.setStudentId(enrollment.getStudent().getId());
+
+        return dto;
+    }
+
+    private PersonalInfoDto convertPersonalInfoToDto(PersonalInfo personalInfo) {
+        PersonalInfoDto dto = new PersonalInfoDto();
+        dto.setFirstName(personalInfo.getFirstName());
+        dto.setLastName(personalInfo.getLastName());
+        //dto.setDateOfBirth(personalInfo.getDateOfBirth());
+        dto.setAddress(personalInfo.getAddress());
+        dto.setPhoneNumber(personalInfo.getPhoneNumber());
+        return dto;
+    }
+
+    private AcademicInfoDto convertAcademicInfoToDto(AcademicInfo academicInfo) {
+        AcademicInfoDto dto = new AcademicInfoDto();
+        dto.setPreviousSchool(academicInfo.getPreviousSchool());
+        dto.setDiploma(academicInfo.getDiploma());
+        dto.setGraduationYear(academicInfo.getGraduationYear());
+        return dto;
     }
 }
