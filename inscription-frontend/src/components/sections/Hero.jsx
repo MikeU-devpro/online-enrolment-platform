@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../common/Button';
-
+import { Link } from 'react-router-dom';
 import hangingTags from '/assets/svg/hanging-tags.svg';
 
 const Hero = () => {
@@ -9,7 +9,7 @@ const Hero = () => {
       className="relative h-[70vh] md:h-[70vh] bg-cover bg-center flex flex-col justify-start text-white pt-16 md:pt-20 overflow-visible"
       style={{ backgroundImage: "url('/assets/images/hero-bg.png')" }}
     >
-
+ 
       <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
 
       <div className="relative z-40 text-left max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto md:ml-24 px-12 md:px-24">
@@ -17,8 +17,13 @@ const Hero = () => {
           Ignite Academy : Quand la curiosité allume le succès
         </h1>
         <div className="flex justify-end space-x-4">
-          <Button primary size="lg">S'inscrire</Button>
-          <Button outline size="lg">Se connecter</Button>
+
+          <Link to="/register">
+            <Button primary size="lg">S'inscrire</Button>
+          </Link>
+          <Link to="/login">
+            <Button outline size="lg">Se connecter</Button>
+          </Link>
         </div>
       </div>
 
