@@ -1,0 +1,56 @@
+#configure server
+server:
+  port: 8091
+
+
+#configure spring datasource,jpa, mail and servlet
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inscription_db
+    username: postgres
+    password: sandra
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lenguesandra@gmail.com
+    password: ohqh nkcm ebpe lplz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+#configure application
+application:
+  security:
+    jwt:
+      secret-key: C003FA3DC88493379ABFCC2779594D1MYSECRETKEY1233ADMIN
+      expiration: 900000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+
+#configure springdoc (swagger)
+springdoc:
+  default-produces-media-type: application/json
+
+
