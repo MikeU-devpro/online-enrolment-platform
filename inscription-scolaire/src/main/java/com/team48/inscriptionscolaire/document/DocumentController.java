@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,19 +23,37 @@ public class DocumentController {
     private final DocumentService service;
 
     //endpoint to uploadImage
-    @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    @Operation(summary = "Upload an image", description = "Upload a single image file")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(
+            summary = "Upload a document",
+            description = "Upload a single document file. Types autorisés: PDF, DOCX, JPG, PNG"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Fichier uploadé avec succès"),
+            @ApiResponse(responseCode = "400", description = "Type de fichier non supporté"),
+            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
     public ResponseEntity<?> uploadImage(
             @Parameter(
-                    description = "The image file to upload",
-                    schema = @Schema(type = "string", format = "binary")
+                    description = "File to upload (Types autorisés: PDF, DOCX, JPG, PNG)",
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            schema = @Schema(
+                                    type = "string",
+                                    format = "binary"
+                            )
+                    )
             )
-            @RequestParam("file")MultipartFile file
-    ) throws IOException {
-        String uploadImage =  service.uploadImage(file);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(uploadImage);
+            @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            String result = service.uploadImage(file);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Erreur lors du traitement du fichier");
+        }
     }
 
 

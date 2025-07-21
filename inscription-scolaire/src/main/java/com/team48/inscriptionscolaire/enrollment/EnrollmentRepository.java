@@ -13,4 +13,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     Optional<Enrollment> findById(Integer id);
     List<Enrollment> findByStudentId(Integer studentId);
     List<Enrollment> findByProgramId(Integer programId);
+
+    List<Enrollment> findByAcademicYear(String academicYear);
+    List<Enrollment> findByProgramIdAndAcademicYear(Integer programId, String academicYear);
+
+    Optional<Enrollment> findByStudentIdAndProgramIdAndAcademicYear(
+            Integer studentId,
+            Integer programId,
+            String academicYear
+    );
 }

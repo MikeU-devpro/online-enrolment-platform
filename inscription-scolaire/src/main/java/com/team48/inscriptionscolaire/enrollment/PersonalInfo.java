@@ -8,7 +8,7 @@ import lombok.Data;
 public class PersonalInfo {
     private String firstName;
     private String lastName;
-    private String address;
-    private String phoneNumber;
+    private String Nationality;
+    //private String phoneNumber;
     // other personal fields
 }
