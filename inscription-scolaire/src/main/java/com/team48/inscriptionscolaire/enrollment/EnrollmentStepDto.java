@@ -9,6 +9,9 @@ import java.util.List;
 public class EnrollmentStepDto {
     private int currentStep;
     private PersonalInfoDto personalInfo;
-    private AcademicInfoDto academicInfo;
     private List<MultipartFile> documents;
+    private ContactDetailsDto contactDetailsDto;
+    private AcademicInfoDto academicInfo;
+
+
 }

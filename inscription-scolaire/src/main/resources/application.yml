@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
@@ -39,8 +39,16 @@ spring:
       max-request-size: 50MB
 
 
+
 #configure application
 application:
+  upload:
+    allowed-file-types:
+      - application/pdf
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      - image/jpeg
+      - image/png
+    allowed-extensions: [ pdf, docx, jpg, jpeg, png ]
   security:
     jwt:
       secret-key: C003FA3DC88493379ABFCC2779594D1MYSECRETKEY1233ADMIN
@@ -52,5 +60,13 @@ application:
 #configure springdoc (swagger)
 springdoc:
   default-produces-media-type: application/json
+#  swagger-ui:
+#    try-it-out-enabled: true
+#    persist-authorization: true
+#    filter: true
+#    request-snippets-enabled: true
+#    syntax-highlight:
+#      activate: true
+#      theme: "agate"
 
 
