@@ -1,42 +1,43 @@
 import React from 'react';
 import CourseCard from '../common/CourseCard';
+import hangingTags from '/assets/svg/hanging-tags.svg'; // Import hangingTags
 
 const coursesData = [
   {
     id: 1,
-    image: '/assets/images/histoire.jpg',
+    image: '/assets/images/histoire.png',
     title: 'Histoire',
     description: "L'histoire est abordée de manière dynamique et engageante, au-delà de mémoriser des dates.",
   },
   {
     id: 2,
-    image: '/assets/images/mathematique.jpg',
+    image: '/assets/images/mathematique.png',
     title: 'Mathématiques',
     description: "Le programme met l'accent sur la logique, la résolution de problèmes et l'analyse critique.",
   },
   {
     id: 3,
-    image: '/assets/images/chimie.jpg',
+    image: '/assets/images/chimie.png',
     title: 'Chimie',
     description: 'La chimie est enseignée de manière interactive et expérimentale.',
   },
   {
     id: 4,
-    image: '/assets/images/informatique.jpg',
+    image: '/assets/images/informatique.png',
     title: 'Informatique',
     description: 'L\'informatique est enseignée de manière pratique et tournée vers l\'avenir.',
   },
   {
     id: 5,
-    image: '/assets/images/physique.jpg',
+    image: '/assets/images/physique.png',
     title: 'Physique',
     description: 'La physique est explorée de manière interactive, en reliant les concepts théoriques.',
   },
   {
     id: 6,
-    image: '/assets/images/anglais.jpg',
+    image: '/assets/images/anglais.png',
     title: 'Anglais',
-    description: 'L\'anglais est enseigné de manière immersive, pour que les étudiants maîtrisent  aussi la culture.',
+    description: 'L\'anglais est enseigné de manière immersive, pour que les étudiants maîtrisent aussi la culture.',
   },
 ];
 
@@ -46,8 +47,22 @@ const CoursesSection = () => {
   return (
     <section
 
-      className="relative mt-[-20] pt-36 md:pt-44 pb-16 md:pb-24 bg-gray-50 mb-[3rem]"
+      className="relative mt-[-20] pt-36 md:pt-44 pb-16 md:pb-24 bg-white mb-[3rem] overflow-visible"
     >
+
+      <img
+        src={hangingTags}
+        alt="Decorative Hanging Tags"
+        className="
+          absolute
+          top-[-14rem] 
+          right-[12rem] /* Fixed left position as per your coordinates */
+          w-[289px]    /* Fixed width as per your coordinates */
+          h-[500px]    /* Fixed height as per your coordinates */
+          z-[100]      /* Set to a very high z-index to guarantee it's in front of everything */
+        "
+      />
+
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
         <h2 className="text-3xl md:text-5xl font-bold text-[#000] text-left mb-12">

@@ -5,25 +5,35 @@ import wave3 from '/assets/images/wave-separator-3.png';
 
 const WaveSeparator = () => {
   return (
+    <div className="w-full h-full overflow-hidden"> 
 
-    <div className="relative w-full h-[20vh] md:h-[5vh]">
-      {/* wave-separator-3 (backmost layer, adjusted z-index) */}
       <img
         src={wave3}
         alt="Wave Separator Layer 3"
-        className="absolute bottom-[2rem] w-full h-[50vh] object-cover object-top z-1"
+        className="absolute bottom-[-25rem] left-[-20%] w-[140%] h-auto object-cover object-top z-1
+                   transform rotate-[-6.71deg]" 
+        style={{
+          opacity: 1, 
+        }}
       />
-      {/* wave-separator-2 (middle layer, adjusted z-index) */}
+
       <img
         src={wave2}
         alt="Wave Separator Layer 2"
-        className="absolute bottom-[-3rem] w-full h-[40vh] object-cover object-top z-2"
+        className="absolute bottom-[-45rem] left-[-10%] w-[120%] h-auto object-cover object-top z-2" 
+        style={{
+          opacity: 1,
+        }}
       />
-      {/* wave-separator-1 (frontmost layer, adjusted z-index) */}
+
       <img
         src={wave1}
         alt="Wave Separator Layer 1"
-        className="absolute bottom-[-3rem] left-0 w-full h-[50vh] object-cover object-top z-3"
+        className="absolute bottom-[-15rem] left-0 w-full h-auto object-cover object-top z-3" 
+        style={{
+          opacity: 1,
+          boxShadow: '0px -4px 25px 0px rgba(0, 0, 0, 0.3)'
+        }}
       />
     </div>
   );

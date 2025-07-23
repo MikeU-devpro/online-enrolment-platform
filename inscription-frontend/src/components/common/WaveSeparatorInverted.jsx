@@ -6,19 +6,19 @@ import wave3 from '/assets/images/wave-separator-3.png';
 const WaveSeparatorInverted = () => {
   return (
     <div className="absolute w-full h-[20vh] md:h-[25vh] rotate-180 pt-[2rem]">
-      {/* wave-separator-3 (backmost layer, adjusted z-index) */}
+
       <img
         src={wave3}
         alt="Inverted Wave Separator Layer 3"
         className="absolute top-[-2rem] w-full h-[40vh] object-cover object-top z-1"
       />
-      {/* wave-separator-2 (middle layer, adjusted z-index) */}
+
       <img
         src={wave2}
         alt="Inverted Wave Separator Layer 2"
         className="absolute top-[-5rem] w-full h-[40vh] object-cover object-top z-2"
       />
-      {/* wave-separator-1 (frontmost layer, adjusted z-index) */}
+
       <img
         src={wave1}
         alt="Inverted Wave Separator Layer 1"

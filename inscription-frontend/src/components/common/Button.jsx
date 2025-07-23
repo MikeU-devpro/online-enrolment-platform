@@ -1,39 +1,46 @@
 import React from 'react';
 
-const Button = ({ children, primary, outline, size = 'md', className = '', ...props }) => {
+const Button = ({ children, primary, secondary, tertiary, size = 'md', className = '', ...props }) => {
 
-  const baseStyles = 'rounded-md font-semibold shadow-md transition duration-300 ease-in-out cursor-pointer';
+  const baseStyles = 'w-[153px] h-[40px] px-[16.01px] py-[8px] rounded-md font-semibold transition duration-300 ease-in-out cursor-pointer flex items-center justify-center'; // Added flex, items-center, justify-center for text centering
 
-  let sizeStyles = '';
+  let sizeTextStyles = '';
   switch (size) {
     case 'sm':
-      sizeStyles = 'px-4 py-1 text-sm';
+      sizeTextStyles = 'text-sm';
       break;
     case 'lg':
-      sizeStyles = 'px-8 py-3 text-lg';
+      sizeTextStyles = 'text-lg';
       break;
     case 'md':
     default:
-      sizeStyles = 'px-6 py-2 text-base';
+      sizeTextStyles = 'text-base';
       break;
   }
 
   let typeStyles = '';
-  let hoverStyles = '';
+  let hoverActiveStyles = '';
 
   if (primary) {
-    typeStyles = 'bg-[#2A3B7C] text-white';
-    hoverStyles = 'hover:bg-white hover:text-[#2A3B7C] hover:border hover:border-[#2A3B7C] active:bg-blue-100 active:shadow-lg';
-  } else if (outline) {
-    typeStyles = 'border border-[#2A3B7C] text-[#2A3B7C] bg-white';
-    hoverStyles = 'hover:bg-[#2A3B7C] hover:text-white active:bg-blue-800 active:shadow-lg';
-  } else {
-    // Default styles if neither primary nor outline is specified
-    typeStyles = 'bg-[#2A3B7C] text-white';
-    hoverStyles = 'hover:bg-white hover:text-[#2A3B7C] hover:border hover:border-[#2A3B7C] active:bg-blue-100 active:shadow-lg';
+
+    typeStyles = 'bg-[#101957] text-white';
+    hoverActiveStyles = 'hover:shadow-[0_0_10.74px_0_#101957] active:bg-[#585E89] active:shadow-[0_0_5.37px_0_#101957]';
+  } else if (secondary) {
+
+    typeStyles = 'bg-white text-[#101957] border border-[#101957]';
+    hoverActiveStyles = 'hover:shadow-[0_0_10.74px_0_#101957] active:border-[#9FA3BC]';
+  } else if (tertiary) {
+
+    typeStyles = 'bg-[#10195726] text-[#101957] border border-[#101957]';
+    hoverActiveStyles = 'hover:shadow-[0_3px_5px_0_#101957]';
+  }
+  else {
+
+    typeStyles = 'bg-[#101957] text-white';
+    hoverActiveStyles = 'hover:shadow-[0_0_10.74px_0_#101957] active:bg-[#585E89] active:shadow-[0_0_5.37px_0_#101957]';
   }
 
-  const finalStyles = `${baseStyles} ${sizeStyles} ${typeStyles} ${hoverStyles} ${className}`;
+  const finalStyles = `${baseStyles} ${sizeTextStyles} ${typeStyles} ${hoverActiveStyles} ${className}`;
 
   return (
     <button className={finalStyles.trim()} {...props}>

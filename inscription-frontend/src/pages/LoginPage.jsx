@@ -1,28 +1,73 @@
-import React from 'react';
-import Button from '../components/common/Button'; // Assuming you have a Button component
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import React, { useState } from 'react';
+import Button from '../components/common/Button';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    if (!email || !password) {
+      setError('Veuillez entrer votre email et votre mot de passe.');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Confirm the exact endpoint with your colleague, e.g., '/auth/authenticate' or '/auth/login'
+      const response = await api.post('/auth/authenticate', {
+        email: email,
+        password: password,
+      });
+
+      console.log('Login successful:', response.data);
+      const { token } = response.data; // Assuming your AuthenticationResponse contains a 'token' field
+
+      localStorage.setItem('jwt_token', token);
+
+      navigate('/dashboard'); // Redirect to a protected page after login
+    } catch (err) {
+      console.error('Login failed:', err);
+      if (err.response) {
+        if (err.response.status === 403 || err.response.status === 401) {
+          setError('Email ou mot de passe incorrect.');
+        } else if (err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError('Échec de la connexion. Veuillez réessayer.');
+        }
+      } else if (err.request) {
+        setError('Impossible de se connecter au serveur. Vérifiez votre connexion.');
+      } else {
+        setError('Une erreur inattendue est survenue.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section
-      className="relative flex items-center justify-center py-8 md:py-12 w-full h-full" // Adjusted classes for full height fitting
+      className="relative flex items-center justify-center py-8 md:py-12 w-full h-full"
       style={{
-        // Main page background: light gray on left, image on right, tilted at 85 degrees
-        // The gradient layer comes first, covering the left part with light gray and making it transparent on the right
-        // The background image then shows through on the transparent part (the right side)
         backgroundImage: `linear-gradient(85deg, #f5f5f5 40%, rgba(245,245,245,0) 40%), url('/assets/images/login-bg.png')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Removed the black overlay div as the background style now handles the effect directly */}
-
-      {/* Main Login Box - Now a flex container for two parts */}
       <div className="relative z-10 flex bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-4xl mx-4">
-        {/* Left Part: Form Section */}
-        <div className="w-full md:w-3/5 p-6 md:p-10"> {/* Adjust padding as needed */}
-          {/* Language Dropdown */}
+        <div className="w-full md:w-3/5 p-6 md:p-10">
           <div className="flex justify-end mb-4">
             <div className="relative inline-block text-gray-700">
               <select
@@ -43,21 +88,11 @@ const LoginPage = () => {
             Connectez-vous à votre compte
           </h2>
 
-          <form className="space-y-5">
+          {error && (
+            <p className="text-red-500 text-center text-sm mb-4">{error}</p>
+          )}
 
-            <div>
-              <label htmlFor="nom" className="block text-gray-700 text-sm font-bold mb-2">
-                Nom
-              </label>
-              <input
-                type="text"
-                id="nom"
-                name="nom"
-                placeholder="Entrez votre nom"
-                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
                 Email
@@ -68,6 +103,8 @@ const LoginPage = () => {
                 name="email"
                 placeholder="Entrez votre email"
                 className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -82,8 +119,9 @@ const LoginPage = () => {
                   name="password"
                   placeholder="Entrez votre mot de passe"
                   className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-
                 <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 cursor-pointer">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                 </span>
@@ -97,6 +135,8 @@ const LoginPage = () => {
                   id="rememberMe"
                   name="rememberMe"
                   className="h-4 w-4 text-[#2A3B7C] rounded focus:ring-[#2A3B7C]"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <label htmlFor="rememberMe" className="ml-2 text-gray-700 text-sm">
                   Se souvenir de moi
@@ -107,8 +147,8 @@ const LoginPage = () => {
               </Link>
             </div>
 
-            <Button type="submit" primary size="lg" className="w-full mt-6">
-              Se connecter
+            <Button type="submit" primary size="lg" className="w-full mt-6" disabled={isLoading}>
+              {isLoading ? 'Connexion...' : 'Se connecter'}
             </Button>
           </form>
 
@@ -144,14 +184,12 @@ const LoginPage = () => {
         <div
           className="hidden md:block w-2/5 bg-cover bg-center"
           style={{
-
             backgroundImage: `linear-gradient(85deg, #d0d0d0 2px, transparent 2px), url('/assets/images/login-bg.png')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
         >
-
         </div>
       </div>
     </section>

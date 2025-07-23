@@ -9,9 +9,7 @@ const HomePage = () => {
   return (
     <>
       <Hero />
-      <WaveSeparator />
       <CoursesSection />
-      <WaveSeparatorInverted />
       <ContactSection />
     </>
   );

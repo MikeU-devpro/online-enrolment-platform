@@ -1,37 +1,57 @@
 import React from 'react';
 import Button from '../common/Button';
 import { Link } from 'react-router-dom';
-import hangingTags from '/assets/svg/hanging-tags.svg';
+import WaveSeparator from '../common/WaveSeparator';
 
 const Hero = () => {
   return (
     <section
-      className="relative h-[70vh] md:h-[70vh] bg-cover bg-center flex flex-col justify-start text-white pt-16 md:pt-20 overflow-visible"
+      className="
+        relative
+        h-[60vh] sm:h-[65vh] md:h-[70vh] lg:h-[75vh] xl:h-[80vh]
+        bg-cover bg-center flex flex-col justify-start text-white
+        pt-12 sm:pt-16 md:pt-20 lg:pt-24
+        overflow-hidden /* Keep this for wave management */
+      "
       style={{ backgroundImage: "url('/assets/images/hero-bg.png')" }}
     >
  
+
       <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
 
-      <div className="relative z-40 text-left max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto md:ml-24 px-12 md:px-24">
-        <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-8">
-          Ignite Academy : Quand la curiosité allume le succès
+      <div className="
+        relative z-40
+        w-full md:w-[752px] xl:w-[752px]
+        h-auto md:h-[282px] xl:h-[282px]
+        mx-auto
+        px-6 sm:px-12 md:px-0
+        md:ml-24 lg:ml-32 xl:ml-48
+        text-center md:text-left
+      ">
+        <h1 className="
+          font-roboto font-bold
+          text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[80px]
+          leading-[100%]
+          tracking-[-0.41px]
+          mb-8
+        ">
+           Ignite Academy<br/>
+           Quand la curiosité<br/>
+           allume le succès
         </h1>
-        <div className="flex justify-end space-x-4">
-
+        <div className="flex justify-center space-x-4 mt-6">
           <Link to="/register">
-            <Button primary size="lg">S'inscrire</Button>
+            <Button primary size="lg" className="w-[213.72px] h-[55.9px]">S'inscrire</Button>
           </Link>
           <Link to="/login">
-            <Button outline size="lg">Se connecter</Button>
+            <Button secondary size="lg" className="w-[213.72px] h-[55.9px]">Se connecter</Button>
           </Link>
         </div>
       </div>
 
-      <img
-        src={hangingTags}
-        alt="Decorative Hanging Tags"
-        className="absolute bottom-[-11rem] right-12 md:right-24 w-40 md:w-48 lg:w-56 z-40"
-      />
+      <div className="absolute bottom-0 left-0 w-full h-[10rem] sm:h-[5rem] md:h-[5rem] lg:h-[5rem] xl:h-[5rem] z-10">
+        <WaveSeparator />
+      </div>
 
     </section>
   );

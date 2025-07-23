@@ -3,10 +3,27 @@ import Button from './Button';
 
 const CourseCard = ({ image, title, description, icon }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
-      {/* Course Image */}
+    <div
+      className="bg-white shadow-lg overflow-hidden flex flex-col"
+      style={{
+        width: '376px',         
+        height: '505.78px',     
+        borderRadius: '20px',   
+        paddingTop: '28px',    
+        paddingRight: '38px',
+        paddingBottom: '28px',
+        paddingLeft: '38px',
+      }}
+    >
+
       {image && (
-        <div className="w-full h-40 md:h-48 overflow-hidden">
+        <div
+          className="w-full overflow-hidden"
+          style={{
+            height: '298.78px',      
+            borderRadius: '20px 20px 0 0', 
+          }}
+        >
           <img
             src={image}
             alt={title}
@@ -15,15 +32,15 @@ const CourseCard = ({ image, title, description, icon }) => {
         </div>
       )}
 
-      {/* Card Content */}
-      <div className="p-6 flex flex-col flex-grow">
-        {/* Title */}
+
+      <div className="flex flex-col flex-grow mt-4">
+
         <h3 className="text-xl font-bold text-[#2A3B7C] mb-2">{title}</h3>
-        {/* Description */}
+
         <p className="text-gray-700 text-sm mb-4 flex-grow">{description}</p>
 
         <div className="mt-auto">
-          <Button primary size="md">En savoir plus</Button>
+          <Button tertiary size="md">En savoir plus</Button>
         </div>
       </div>
     </div>
