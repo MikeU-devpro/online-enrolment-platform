@@ -3,7 +3,7 @@ import Logo from '../common/Logo';
 import Button from '../common/Button';
 import { Link } from 'react-router-dom';
 
-const Footer = () => {
+const AppFooter = () => {
   return (
     <footer
       className="bg-white text-gray-800 py-[0.55rem] px-[0.85rem] md:px-[1.75rem] mt-[0.165rem]" // Margin top decreased by 70%
@@ -73,4 +73,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default AppFooter;

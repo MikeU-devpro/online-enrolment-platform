@@ -71,7 +71,7 @@ const VerifyEmailPage = () => {
     }
 
     try {
-      const response = await api.post('/auth/verify-email', {
+      const response = await api.post('/auth/activate-account', {
         email: registeredEmail,
         code: verificationCode,
       });

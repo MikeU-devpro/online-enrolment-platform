@@ -3,7 +3,7 @@ import Logo from '../common/Logo';
 import Button from '../common/Button';
 import { Link } from 'react-router-dom';
 
-const Header = () => {
+const AppHeader = () => {
   return (
     <>
       {/* CSS for the underline-from-center effect */}
@@ -79,4 +79,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default AppHeader;
