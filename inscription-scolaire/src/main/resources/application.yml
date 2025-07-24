@@ -1,6 +1,6 @@
 #configure server
 server:
-  port: 8091
+  port: 9091
 
 
 #configure spring datasource,jpa, mail and servlet
@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/inscription_db
     username: postgres
-    password: sandra
+    password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
