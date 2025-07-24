@@ -55,7 +55,7 @@ application:
       expiration: 900000
   mailing:
     frontend:
-      activation-url: http://localhost:4200/activate-account
+      activation-url: http://localhost:5173/verify-email
 
 #configure springdoc (swagger)
 springdoc:
@@ -68,5 +68,4 @@ springdoc:
 #    syntax-highlight:
 #      activate: true
 #      theme: "agate"
-
 
