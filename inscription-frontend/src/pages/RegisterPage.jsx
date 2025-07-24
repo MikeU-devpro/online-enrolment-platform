@@ -2,24 +2,27 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/common/Button';
 import api from '../services/api';
-// import Logo from '../components/common/Logo';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    if (!email || !password || !confirmPassword) {
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
       setError('Veuillez remplir tous les champs.');
       setIsLoading(false);
       return;
@@ -39,6 +42,8 @@ const RegisterPage = () => {
 
     try {
       const response = await api.post('/auth/signup', {
+        firstname: firstName,
+        lastname: lastName,
         email: email,
         password: password,
         roleName: 'STUDENT',
@@ -66,21 +71,35 @@ const RegisterPage = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
   return (
     <section
-      className="relative flex items-center justify-center py-8 md:py-12 w-full h-full"
+      className="relative flex items-center justify-center w-full h-full"
       style={{
         backgroundImage: `url('/assets/images/register-bg.png'), linear-gradient(to right, #EFEFEF, #EFEFEF)`,
         backgroundSize: '60% 100%, 40% 100%',
         backgroundPosition: 'left center, right center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        paddingTop: '1.4775rem', // 1.5rem * (1 - 0.015)
+        paddingBottom: '1.4775rem', // 1.5rem * (1 - 0.015)
+        '@media (min-width: 768px)': {
+          paddingTop: '2.21625rem', // 2.25rem * (1 - 0.015)
+          paddingBottom: '2.21625rem', // 2.25rem * (1 - 0.015)
+        },
       }}
     >
       <div
         className="relative z-10 bg-white rounded-lg shadow-xl overflow-hidden"
         style={{
           width: '50vw',
-          height: '56.5vh',
+          height: '61.35916vh', // Increased height by 3% (59.572 * 1.03)
           borderRadius: '1.93rem',
           boxShadow: '0px 0px 0.77rem 0px rgba(0, 0, 0, 0.25)',
           display: 'grid',
@@ -96,18 +115,26 @@ const RegisterPage = () => {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             width: '25.70vw',
-            height: '54.67vh', 
+            height: '59.688706vh', // Adjusted proportionally (57.9502 * 1.03)
             top: '0.45rem',
-            left: '0.48rem', 
+            left: '0.48rem',
             borderRadius: '1.81rem',
           }}
         >
         </div>
 
         <div
-          className="p-[1.35rem] md:p-[2.25rem]"
           style={{
-            paddingLeft: 'calc(25.70vw + 0.48rem + 2.25rem)', // Adjusted paddingLeft to reflect new width and left position
+            paddingTop: '1.35rem',
+            paddingRight: '1.35rem',
+            paddingBottom: '2.70rem',
+            paddingLeft: 'calc(25.70vw + 0.48rem + 2.25rem)',
+            '@media (min-width: 768px)': {
+              paddingTop: '2.25rem',
+              paddingRight: '2.25rem',
+              paddingBottom: '4.50rem',
+              paddingLeft: 'calc(25.70vw + 0.48rem + 2.25rem)',
+            },
           }}
         >
           <div className="flex justify-end mb-[1.13rem]">
@@ -144,6 +171,80 @@ const RegisterPage = () => {
           )}
 
           <form className="space-y-[1.13rem]" onSubmit={handleSubmit}>
+            <div className="flex justify-between" style={{ gap: '1.13rem' }}>
+              <div className="relative flex-1">
+                <label
+                  htmlFor="lastName"
+                  className="absolute text-gray-700 text-[0.79rem]"
+                  style={{
+                    top: '-0.68rem',
+                    left: '0.72rem',
+                    backgroundColor: 'white',
+                    padding: '0 0.18rem',
+                    fontSize: '0.72rem',
+                    zIndex: 10,
+                  }}
+                >
+                  Nom
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Entrez votre nom"
+                  className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  style={{
+                    width: '100%',
+                    height: '2.15rem',
+                    borderTopLeftRadius: '0.15rem',
+                    borderTopRightRadius: '0.15rem',
+                    paddingTop: '0.63rem',
+                    paddingBottom: '0.45rem',
+                    paddingLeft: '0.72rem',
+                    paddingRight: '0.72rem',
+                  }}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+
+              <div className="relative flex-1">
+                <label
+                  htmlFor="firstName"
+                  className="absolute text-gray-700 text-[0.79rem]"
+                  style={{
+                    top: '-0.68rem',
+                    left: '0.72rem',
+                    backgroundColor: 'white',
+                    padding: '0 0.18rem',
+                    fontSize: '0.72rem',
+                    zIndex: 10,
+                  }}
+                >
+                  Prénom
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  placeholder="Entrez votre prénom"
+                  className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  style={{
+                    width: '100%',
+                    height: '2.15rem',
+                    borderTopLeftRadius: '0.15rem',
+                    borderTopRightRadius: '0.15rem',
+                    paddingTop: '0.63rem',
+                    paddingBottom: '0.45rem',
+                    paddingLeft: '0.72rem',
+                    paddingRight: '0.72rem',
+                  }}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="relative">
               <label
                 htmlFor="email"
@@ -197,7 +298,7 @@ const RegisterPage = () => {
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
                   placeholder="Entrez votre mot de passe"
@@ -210,12 +311,25 @@ const RegisterPage = () => {
                     paddingTop: '0.63rem',
                     paddingBottom: '0.45rem',
                     paddingLeft: '0.72rem',
+                    paddingRight: '0.72rem',
                   }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <span className="absolute inset-y-0 right-0 flex items-center pr-[0.68rem] text-gray-400 cursor-pointer">
-                  <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                <span
+                  className="absolute inset-y-0 right-0 flex items-center pr-[0.68rem] text-gray-400 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .59-1.874 1.545-3.64 2.898-5.07L4.545 5.545M19.07 19.07a10.05 10.05 0 00.93-2.07c1.274-4.057-2.517-7-7.042-7a10.05 10.05 0 00-2.07-.93M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  )}
                 </span>
               </div>
             </div>
@@ -233,14 +347,14 @@ const RegisterPage = () => {
                   zIndex: 10,
                 }}
               >
-                Confirmer mot de passe
+                Confirmer le mot de passe
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
                   name="confirmPassword"
-                  placeholder="Confirmer votre mot de passe"
+                  placeholder="Confirmez votre mot de passe"
                   className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-[2.25rem]"
                   style={{
                     width: '21.29vw',
@@ -250,12 +364,25 @@ const RegisterPage = () => {
                     paddingTop: '0.63rem',
                     paddingBottom: '0.45rem',
                     paddingLeft: '0.72rem',
+                    paddingRight: '0.72rem',
                   }}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                <span className="absolute inset-y-0 right-0 flex items-center pr-[0.68rem] text-gray-400 cursor-pointer">
-                  <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                <span
+                  className="absolute inset-y-0 right-0 flex items-center pr-[0.68rem] text-gray-400 cursor-pointer"
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? (
+                    <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .59-1.874 1.545-3.64 2.898-5.07L4.545 5.545M19.07 19.07a10.05 10.05 0 00.93-2.07c1.274-4.057-2.517-7-7.042-7a10.05 10.05 0 00-2.07-.93M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-[1.13rem] h-[1.13rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  )}
                 </span>
               </div>
             </div>
@@ -306,32 +433,36 @@ const RegisterPage = () => {
               className="flex items-center justify-center shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out"
               type="button"
               style={{
-                width: '10.17vw',
-                border: '0.04rem solid #999999',
-                borderRadius: '0.23rem',
-                paddingTop: '0.45rem',
-                paddingRight: '2.15rem',
-                paddingBottom: '0.45rem',
-                paddingLeft: '2.15rem',
+                width: '162.78px',
+                height: '35.57px',
+                borderRadius: '0.25625rem',
+                border: '0.0425rem solid #999999',
+                paddingTop: '0.25625rem',
+                paddingRight: '2.39375rem',
+                paddingBottom: '0.25625rem',
+                paddingLeft: '2.39375rem',
+                gap: '0.17125rem',
               }}
             >
-              <img src="/assets/images/google-icon.png" alt="Google Icon" className="w-[2.25rem] h-[2.25rem] mr-[0.45rem]" />
+              <img src="/assets/images/google-icon.png" alt="Google Icon" className="w-[2.25rem] h-[2.25rem]" />
               Google
             </button>
             <button
               className="flex items-center justify-center shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out"
               type="button"
               style={{
-                width: '10.17vw',
-                border: '0.04rem solid #999999',
-                borderRadius: '0.23rem',
-                paddingTop: '0.45rem',
-                paddingRight: '2.15rem',
-                paddingBottom: '0.45rem',
-                paddingLeft: '2.15rem',
+                width: '162.78px',
+                height: '35.57px',
+                borderRadius: '0.25625rem',
+                border: '0.0425rem solid #999999',
+                paddingTop: '0.25625rem',
+                paddingRight: '2.39375rem',
+                paddingBottom: '0.25625rem',
+                paddingLeft: '2.39375rem',
+                gap: '0.17125rem',
               }}
             >
-              <img src="/assets/images/apple-icon.png" alt="Apple Icon" className="w-[2.25rem] h-[2.25rem] mr-[0.45rem]" />
+              <img src="/assets/images/apple-icon.png" alt="Apple Icon" className="w-[2.25rem] h-[2.25rem]" />
               Apple
             </button>
           </div>
