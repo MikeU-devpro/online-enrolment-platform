@@ -6,9 +6,9 @@ server:
 #configure spring datasource,jpa, mail and servlet
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/inscription_db
-    username: postgres
-    password: root
+    url: jdbc:postgresql://localhost:5432/enrolment
+    username: mike_react
+    password: MIKAHEL
     driver-class-name: org.postgresql.Driver
 
   jpa:

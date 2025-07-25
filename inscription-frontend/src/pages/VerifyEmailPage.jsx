@@ -5,13 +5,13 @@ import api from '../services/api';
 
 const VerifyEmailPage = () => {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const { email: registeredEmail } = location.state || {};
 
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const inputRefs = useRef([]); 
+  const inputRefs = useRef([]);
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -35,7 +35,7 @@ const VerifyEmailPage = () => {
       inputRefs.current[index + 1].focus();
     }
     if (e.nativeEvent.inputType === 'deleteContentBackward' && index > 0 && !value) {
-        inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1].focus();
     }
   };
 
@@ -71,13 +71,11 @@ const VerifyEmailPage = () => {
     }
 
     try {
-      const response = await api.get('/auth/activate-account', {
-        email: registeredEmail,
-        code: verificationCode,
-      });
+
+      const response = await api.get(`/auth/activate-account?token=${verificationCode}`);
 
       console.log('Email verification successful:', response.data);
-  
+
       navigate('/login');
     } catch (err) {
       console.error('Email verification failed:', err);
@@ -230,7 +228,7 @@ const VerifyEmailPage = () => {
             </Button>
           </form>
 
-          <p className="text-center text-gray-600 text-[0.75rem] mt-[1rem]"> 
+          <p className="text-center text-gray-600 text-[0.75rem] mt-[1rem]">
             Vous n'avez pas reçu le code ?{' '}
             <Link
               to="#"
