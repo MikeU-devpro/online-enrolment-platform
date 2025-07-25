@@ -71,7 +71,7 @@ const VerifyEmailPage = () => {
     }
 
     try {
-      const response = await api.post('/auth/activate-account', {
+      const response = await api.get('/auth/activate-account', {
         email: registeredEmail,
         code: verificationCode,
       });
@@ -97,7 +97,7 @@ const VerifyEmailPage = () => {
     setError('');
     setIsLoading(true);
     try {
-      await api.post('/auth/resend-verification-code', { email: registeredEmail });
+      await api.post('/auth/activate-account', { email: registeredEmail });
       alert('Un nouveau code a été envoyé à votre adresse e-mail.');
     } catch (err) {
       console.error('Failed to resend code:', err);
