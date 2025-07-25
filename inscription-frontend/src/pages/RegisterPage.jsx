@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/common/Button';
 import api from '../services/api';
 
+const pxToRem = (px) => `${(px / 16).toFixed(2)}rem`;
+
 const RegisterPage = () => {
   const navigate = useNavigate();
 
@@ -87,24 +89,17 @@ const RegisterPage = () => {
         backgroundSize: '60% 100%, 40% 100%',
         backgroundPosition: 'left center, right center',
         backgroundRepeat: 'no-repeat',
-        paddingTop: '1.4775rem', // 1.5rem * (1 - 0.015)
-        paddingBottom: '1.4775rem', // 1.5rem * (1 - 0.015)
-        '@media (min-width: 768px)': {
-          paddingTop: '2.21625rem', // 2.25rem * (1 - 0.015)
-          paddingBottom: '2.21625rem', // 2.25rem * (1 - 0.015)
-        },
+        paddingTop: '1.48rem',
+        paddingBottom: '1.48rem',
       }}
     >
       <div
         className="relative z-10 bg-white rounded-lg shadow-xl overflow-hidden"
         style={{
           width: '50vw',
-          height: '61.35916vh', // Increased height by 3% (59.572 * 1.03)
+          height: '61.36vh',
           borderRadius: '1.93rem',
           boxShadow: '0px 0px 0.77rem 0px rgba(0, 0, 0, 0.25)',
-          display: 'grid',
-          gridTemplateColumns: 'auto 1fr',
-          marginRight: '1.80vw',
         }}
       >
         <div
@@ -115,7 +110,7 @@ const RegisterPage = () => {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             width: '25.70vw',
-            height: '59.688706vh', // Adjusted proportionally (57.9502 * 1.03)
+            height: '59.69vh',
             top: '0.45rem',
             left: '0.48rem',
             borderRadius: '1.81rem',
@@ -128,13 +123,26 @@ const RegisterPage = () => {
             paddingTop: '1.35rem',
             paddingRight: '1.35rem',
             paddingBottom: '2.70rem',
-            paddingLeft: 'calc(25.70vw + 0.48rem + 2.25rem)',
+            paddingLeft: '1.35rem',
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            right: 0,
+            width: 'calc(50vw - 25.70vw - 0.48rem)',
+            left: 'calc(25.70vw + 0.48rem)',
+            '@media (max-width: 767px)': {
+              width: '100%',
+              left: 0,
+              paddingLeft: '1.35rem',
+              paddingRight: '1.35rem',
+            },
             '@media (min-width: 768px)': {
               paddingTop: '2.25rem',
               paddingRight: '2.25rem',
               paddingBottom: '4.50rem',
               paddingLeft: 'calc(25.70vw + 0.48rem + 2.25rem)',
             },
+            overflowY: 'auto',
           }}
         >
           <div className="flex justify-end mb-[1.13rem]">
@@ -267,7 +275,7 @@ const RegisterPage = () => {
                 placeholder="Entrez votre email"
                 className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 style={{
-                  width: '21.29vw',
+                  width: '100%',
                   height: '2.15rem',
                   borderTopLeftRadius: '0.15rem',
                   borderTopRightRadius: '0.15rem',
@@ -304,7 +312,7 @@ const RegisterPage = () => {
                   placeholder="Entrez votre mot de passe"
                   className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-[2.25rem]"
                   style={{
-                    width: '21.29vw',
+                    width: '100%',
                     height: '2.15rem',
                     borderTopLeftRadius: '0.15rem',
                     borderTopRightRadius: '0.15rem',
@@ -357,7 +365,7 @@ const RegisterPage = () => {
                   placeholder="Confirmez votre mot de passe"
                   className="shadow appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-[2.25rem]"
                   style={{
-                    width: '21.29vw',
+                    width: '100%',
                     height: '2.15rem',
                     borderTopLeftRadius: '0.15rem',
                     borderTopRightRadius: '0.15rem',
@@ -408,7 +416,7 @@ const RegisterPage = () => {
               type="submit"
               disabled={isLoading}
               style={{
-                width: '21.29vw',
+                width: '100%',
                 height: '2.15rem',
                 backgroundColor: '#101957',
                 borderRadius: '0.23rem',
@@ -433,15 +441,15 @@ const RegisterPage = () => {
               className="flex items-center justify-center shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out"
               type="button"
               style={{
-                width: '162.78px',
+                width: '100%',
                 height: '35.57px',
-                borderRadius: '0.25625rem',
-                border: '0.0425rem solid #999999',
-                paddingTop: '0.25625rem',
-                paddingRight: '2.39375rem',
-                paddingBottom: '0.25625rem',
-                paddingLeft: '2.39375rem',
-                gap: '0.17125rem',
+                borderRadius: '0.26rem',
+                border: '0.04rem solid #999999',
+                paddingTop: '0.26rem',
+                paddingRight: '2.39rem',
+                paddingBottom: '0.26rem',
+                paddingLeft: '2.39rem',
+                gap: '0.17rem',
               }}
             >
               <img src="/assets/images/google-icon.png" alt="Google Icon" className="w-[2.25rem] h-[2.25rem]" />
@@ -451,15 +459,15 @@ const RegisterPage = () => {
               className="flex items-center justify-center shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out"
               type="button"
               style={{
-                width: '162.78px',
+                width: '100%',
                 height: '35.57px',
-                borderRadius: '0.25625rem',
-                border: '0.0425rem solid #999999',
-                paddingTop: '0.25625rem',
-                paddingRight: '2.39375rem',
-                paddingBottom: '0.25625rem',
-                paddingLeft: '2.39375rem',
-                gap: '0.17125rem',
+                borderRadius: '0.26rem',
+                border: '0.04rem solid #999999',
+                paddingTop: '0.26rem',
+                paddingRight: '2.39rem',
+                paddingBottom: '0.26rem',
+                paddingLeft: '2.39rem',
+                gap: '0.17rem',
               }}
             >
               <img src="/assets/images/apple-icon.png" alt="Apple Icon" className="w-[2.25rem] h-[2.25rem]" />
