@@ -6,9 +6,9 @@ server:
 #configure spring datasource,jpa, mail and servlet
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/enrolment
-    username: mike_react
-    password: MIKAHEL
+    url: jdbc:postgresql://localhost:5432/inscription_db
+    username: postgres
+    password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -55,7 +55,7 @@ application:
       expiration: 900000
   mailing:
     frontend:
-      activation-url: http://localhost:5173/verify-email
+      activation-url: http://localhost:4200/activate-account
 
 #configure springdoc (swagger)
 springdoc:
@@ -68,4 +68,5 @@ springdoc:
 #    syntax-highlight:
 #      activate: true
 #      theme: "agate"
+
 
