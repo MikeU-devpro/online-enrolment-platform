@@ -1,5 +1,6 @@
 package com.team48.inscriptionscolaire.security;
 
+import io.swagger.v3.oas.models.PathItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

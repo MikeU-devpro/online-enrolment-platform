@@ -34,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+
         final String servletPath = request.getServletPath();
 
         // MODIFICATION : Condition plus précise pour les chemins publics

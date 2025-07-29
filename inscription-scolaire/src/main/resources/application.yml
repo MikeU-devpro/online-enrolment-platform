@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/inscription_db
     username: postgres
-    password: sandra
+    password: root
     driver-class-name: org.postgresql.Driver
 
   jpa:
