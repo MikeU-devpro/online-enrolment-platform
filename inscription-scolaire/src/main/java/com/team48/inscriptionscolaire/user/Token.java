@@ -21,6 +21,10 @@ public class Token {
     private LocalDateTime expiresAt;
     private LocalDateTime validatedAt;
 
+    // AJOUT : champs pour la révocation
+    public boolean revoked;
+    public boolean expired;
+
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;

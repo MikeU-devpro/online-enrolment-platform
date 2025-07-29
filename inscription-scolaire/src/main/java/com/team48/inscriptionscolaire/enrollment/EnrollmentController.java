@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/enrollments")
+@RequestMapping("/enrollments")
 @RequiredArgsConstructor
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;

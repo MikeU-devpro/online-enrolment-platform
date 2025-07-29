@@ -13,10 +13,13 @@ import com.team48.inscriptionscolaire.user.TokenRepository;
 import com.team48.inscriptionscolaire.user.User;
 import com.team48.inscriptionscolaire.user.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,7 @@ public class AuthenticationService {
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
     private final JwtService jwtService;
+
 
     public void register(RegistrationRequest request) throws MessagingException {
         if (!List.of("STUDENT", "ADMIN").contains(request.getRoleName())) {
@@ -113,6 +117,8 @@ public class AuthenticationService {
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .user(user)
+                .revoked(false)
+                .expired(false)
                 .build();
 
         tokenRepository.save(token);
@@ -134,19 +140,45 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var auth = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
-
                 )
         );
-        var claims = new HashMap<String, Object>();
-        var user = ((User)auth.getPrincipal());
-        claims.put("fullname", user.fullName());
-        var jwtToken = jwtService.generateToken(claims,user);
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(); // Assurez-vous que l'utilisateur est trouvé
+        var jwtToken = jwtService.generateToken(user);
+
+        // AJOUT : Révoquer tous les anciens tokens de l'utilisateur
+        revokeAllUserTokens(user);
+        // AJOUT : Sauvegarder le nouveau token
+        saveUserToken(user, jwtToken);
 
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+
+    // AJOUT : Méthode pour sauvegarder un token
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    // AJOUT : Méthode pour révoquer les tokens
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
     }
 
     //@Transactional
@@ -168,4 +200,32 @@ public class AuthenticationService {
         tokenRepository.save(savedToken);
 
     }
+
+    // ===================================================================================
+    // ================= MÉTHODE DE DÉCONNEXION AJOUTÉE ===================================
+    // ===================================================================================
+
+    /**
+     * Gère la déconnexion en révoquant le token JWT fourni.
+     * @param request La requête HTTP contenant l'en-tête d'autorisation.
+     */
+    public void logout(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String jwt;
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return; // Pas de token, rien à faire
+        }
+
+        jwt = authHeader.substring(7);
+        var storedToken = tokenRepository.findByToken(jwt).orElse(null);
+
+        if (storedToken != null) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            tokenRepository.save(storedToken);
+            SecurityContextHolder.clearContext(); // Nettoie le contexte de sécurité
+        }
+    }
+
 }
