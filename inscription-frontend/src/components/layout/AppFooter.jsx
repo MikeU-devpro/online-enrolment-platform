@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const AppFooter = () => {
   return (
     <footer
-      className="bg-white text-gray-800 py-[0.55rem] px-[0.85rem] md:px-[1.75rem] mt-[0.165rem]" // Margin top decreased by 70%
+      className="bg-white text-gray-800 py-[0.55rem] px-[0.85rem] md:px-[1.75rem] mt-[0.165rem] height:250px"
     >
       <div className="">
         <div className="flex flex-col md:flex-row justify-between items-start mb-[1.19rem] space-y-[1.19rem] md:space-y-0">

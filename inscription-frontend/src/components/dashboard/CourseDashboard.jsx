@@ -1,83 +1,174 @@
 import React, { useState } from 'react';
 import CourseCard from './CourseCard';
+import EnrollmentForm from './EnrollmentForm';
 
 const SearchIcon = '/assets/svg/search-icon.svg';
 
 const CourseDashboard = () => {
-    const [courses, setCourses] = useState([
+    const [courses] = useState([
         {
             id: '1',
             title: 'Informatique',
             description: 'Fondamentaux de la programmation, logique informatique.',
-            imageUrl: '/assets/images/course-informatique.jpg'
+            imageUrl: '/assets/images/filiere-informatique.jpg'
         },
         {
             id: '2',
             title: 'Biologie',
             description: 'Analyse et maîtrise de la science de la vie.',
-            imageUrl: '/assets/images/course-biologie.jpg'
+            imageUrl: '/assets/images/filiere-biologie.jpg'
         },
         {
             id: '3',
             title: 'Physique',
             description: 'Compréhension des lois de l\'univers et phénomènes naturels.',
-            imageUrl: '/assets/images/course-physique.jpg'
+            imageUrl: '/assets/images/filiere-physique.jpg'
         },
         {
             id: '4',
             title: 'Chimie',
             description: 'Exploration de la matière et des réactions chimiques.',
-            imageUrl: '/assets/images/course-chimie.jpg'
+            imageUrl: '/assets/images/filiere-chimie.jpg'
         },
         {
             id: '5',
             title: 'Mathématiques',
             description: 'Développement de la logique et résolution de problèmes.',
-            imageUrl: '/assets/images/course-mathematiques.jpg'
+            imageUrl: '/assets/images/filiere-mathematiques.jpg'
         },
         {
             id: '6',
             title: 'Art & Design',
             description: 'Créativité visuelle et principes du design graphique.',
-            imageUrl: '/assets/images/course-art-design.jpg'
+            imageUrl: '/assets/images/filiere-art-et-design.jpg'
         },
-
+        {
+            id: '7',
+            title: 'Histoire',
+            description: 'Exploration de la matière et des réactions chimiques.',
+            imageUrl: '/assets/images/filiere-histoire.jpg'
+        },
+        {
+            id: '8',
+            title: 'Anglais',
+            description: 'Développement de la logique et résolution de problèmes.',
+            imageUrl: '/assets/images/filiere-anglais.jpg'
+        },
+        {
+            id: '9',
+            title: 'Géologie',
+            description: 'Créativité visuelle et principes du design graphique.',
+            imageUrl: '/assets/images/filiere-geologie.jpg'
+        },
     ]);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [displayMode, setDisplayMode] = useState('courses');
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
     const filteredCourses = courses.filter(course =>
         course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         course.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleEnrollClick = (course) => {
+        setSelectedCourse(course);
+        setDisplayMode('enrollment');
+    };
+
+    const handleGoBackToCourses = () => {
+        setSelectedCourse(null);
+        setDisplayMode('courses');
+    };
+
     return (
-        <div className="p-4">
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">Filières</h2>
+        <div
+            className="flex flex-col flex-grow bg-white"
+            style={{
+                paddingTop: '1.88rem',
+                paddingRight: '2rem',
+                paddingBottom: '1.88rem',
+                paddingLeft: '2rem',
+                borderTopLeftRadius: '1.25rem',
+                borderBottomLeftRadius: '1.25rem',
+            }}
+        >
+            {displayMode === 'courses' ? (
+                <>
+                    <div
+                        className="flex items-center justify-between mb-8"
+                        style={{
+                            height: '2rem',
+                        }}
+                    >
+                        <h2
+                            className="font-medium text-[#333333]"
+                            style={{
+                                fontSize: '2rem',
+                                lineHeight: '143%',
+                                letterSpacing: '0.0156rem',
+                                fontFamily: 'Roboto, sans-serif',
+                            }}
+                        >
+                            Filières
+                        </h2>
 
-            <div className="relative mb-8 max-w-lg">
-                <input
-                    type="text"
-                    placeholder="Rechercher"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] focus:border-transparent"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <img
-                    src={SearchIcon}
-                    alt="Rechercher"
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                />
-            </div>
+                        <div
+                            className="relative"
+                            style={{
+                                width: '21.88rem',
+                                height: '2rem',
+                                borderRadius: '0.38rem',
+                                border: '0.5px solid #999999',
+                            }}
+                        >
+                            <input
+                                type="text"
+                                placeholder="Rechercher"
+                                className="w-full h-full pl-[2.5rem] pr-[1.25rem] py-[0.25rem] rounded-[0.38rem] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] focus:border-transparent bg-transparent text-[#333333]"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{
+                                    border: 'none',
+                                }}
+                            />
+                            <img
+                                src={SearchIcon}
+                                alt="Rechercher"
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
+                            />
+                        </div>
+                    </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredCourses.map(course => (
-                    <CourseCard key={course.id} course={course} />
-                ))}
-                {filteredCourses.length === 0 && (
-                    <p className="col-span-full text-center text-gray-600">Aucun cours trouvé.</p>
-                )}
-            </div>
+                    <div
+                        className="bg-gray-800 mb-[1.88rem]"
+                        style={{
+                            height: '0.31rem',
+                            borderRadius: '0.5rem',
+                        }}
+                    ></div>
+
+                    <div
+                        className="grid grid-cols-3"
+                        style={{
+                            borderRadius: '0.63rem',
+                            padding: '1.75rem',
+                            rowGap: '1.5rem',
+                            columnGap: '1.5rem',
+                            boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
+                        }}
+                    >
+                        {filteredCourses.map(course => (
+                            <CourseCard key={course.id} course={course} onEnrollClick={handleEnrollClick} />
+                        ))}
+                        {filteredCourses.length === 0 && (
+                            <p className="col-span-full text-center text-gray-600">Aucun cours trouvé.</p>
+                        )}
+                    </div>
+                </>
+            ) : (
+                <EnrollmentForm course={selectedCourse} onGoBack={handleGoBackToCourses} />
+            )}
         </div>
     );
 };

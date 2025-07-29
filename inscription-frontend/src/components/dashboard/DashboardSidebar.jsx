@@ -1,4 +1,3 @@
-// src/components/dashboard/DashboardSidebar.jsx
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -15,57 +14,120 @@ const DashboardSidebar = () => {
     const logoutIcon = '/assets/svg/logout-icon.svg';
     const supportBoyImage = '/assets/images/support-boy-with-laptop.png';
 
-
     return (
-        <div className="w-64 bg-[#1A2C3D] text-white flex flex-col p-4 shadow-lg h-full">
-            <div className="flex items-center justify-center py-6">
-                <img src={igniteAcademyLogo} alt="Ignite Academy Logo" className="h-10 mr-3" />
-                <span className="text-2xl font-bold">Ignite Academy</span>
+        <div className="flex flex-col p-4 shadow-lg w-[15rem]" style={{ backgroundColor: '#101957' }}>
+            <div className="flex items-center justify-center pt-0 pb-6 pl-2">
+                <img src={igniteAcademyLogo} alt="Ignite Academy Logo" style={{ height: '3.88rem' }} className="mr-3" />
+                <span className="text-2xl font-bold text-white">Ignite Academy</span>
             </div>
 
-            <nav className="flex-1 mt-8">
+            <nav className="flex-1 mt-2">
                 <ul>
                     {navItems.map((item) => (
                         <li key={item.key} className="mb-2">
                             <NavLink
                                 to={item.path}
                                 className={({ isActive }) =>
-                                    `flex items-center p-3 rounded-lg transition-colors duration-200 ${
-                                        isActive ? 'bg-[#3A506B] text-white' : 'hover:bg-[#3A506B] text-gray-300'
+                                    `flex items-center transition-colors duration-200 font-normal align-middle ` +
+                                    `${
+                                        isActive
+                                            ? 'bg-[#F96567] text-white'
+                                            : 'bg-transparent hover:bg-[#3A506B] text-gray-300'
                                     }`
                                 }
+                                style={{
+                                    width: '12.5rem',
+                                    height: '1.88rem',
+                                    borderRadius: '0.38rem',
+                                    gap: '0.5rem',
+                                    paddingRight: '0.25rem',
+                                    paddingLeft: '0.25rem',
+                                    fontSize: '1rem',
+                                    lineHeight: '1.5rem',
+                                    letterSpacing: 'normal',
+                                }}
                                 end={item.path === '/dashboard'}
                             >
                                 <img src={item.icon} alt={`${item.name} icon`} className="mr-3 w-5 h-5" />
-                                <span className="text-lg">{item.name}</span>
+                                <span>{item.name}</span>
                             </NavLink>
                         </li>
                     ))}
                 </ul>
             </nav>
 
-            <div className="mt-auto p-4 bg-[#2A3E50] rounded-lg text-center mx-2 mb-4 relative overflow-hidden">
+            <div className="mt-auto relative overflow-hidden text-center mx-auto"
+                 style={{
+                     width: '10.63rem',
+                     height: '18rem',
+                     borderRadius: '1.25rem',
+                     background: '#FFFFFF1A',
+                     marginBottom: '1rem',
+                     boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
+                 }}>
+
+                <div
+                    className="absolute z-0"
+                    style={{
+                        width: '20rem',
+                        height: '20rem',
+                        bottom: '-10rem',
+                        left: '-10rem',
+                        borderRadius: '50%',
+                        background: 'rgba(255, 255, 255, 0.125)',
+                    }}
+                ></div>
+
                 <img
                     src={supportBoyImage}
                     alt="Support illustration"
-                    className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-40 h-auto opacity-70"
+                    className="absolute z-10"
+                    style={{
+                        width: '6.88rem',
+                        height: '8.51rem',
+                        bottom: '0',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        opacity: 1
+                    }}
                 />
-                <div className="relative z-10">
-                    <p className="text-sm font-semibold mb-2">Support 24/7</p>
-                    <p className="text-xs text-gray-400 mb-3">Contactez-nous à tout moment</p>
-                    <button className="bg-[#6B4F8B] text-white text-sm px-4 py-2 rounded-full hover:bg-[#5C4278] transition-colors duration-200">
-                        Rejoindre
-                    </button>
+
+                <div className="absolute z-20 top-4 right-4 text-right" style={{ width: '8rem' }}>
+                    <p className="text-sm font-semibold mb-1 text-white">Support 24/7</p>
+                    <p className="text-xs text-gray-400">Contactez-nous à tout moment</p>
                 </div>
+
+                <button
+                    className="absolute z-20 text-white shadow-md rounded-[0.25rem] flex items-center justify-center" // Added flex items-center justify-center
+                    style={{
+                        width: '4.19rem',
+                        height: '1.44rem',
+                        padding: '0.5rem 0.25rem',
+                        background: '#F96567',
+                        boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
+                        top: '5.5rem',
+                        right: '0.5rem',
+                        fontSize: '0.625rem',
+                    }}>
+                    Commencer
+                </button>
             </div>
 
-            <div className="p-2 mx-2">
+            <div className="px-2 pb-4">
                 <button
                     onClick={() => console.log('Disconnect clicked')}
-                    className="flex items-center justify-center w-full p-3 rounded-lg text-red-400 hover:bg-[#3A506B] transition-colors duration-200"
+                    className="flex items-center justify-center w-full rounded-[0.5rem] hover:bg-[#3A506B] transition-colors duration-200 text-white"
+                    style={{
+                        width: '12.5rem',
+                        height: '1.88rem',
+                        gap: '0.5rem',
+                        paddingRight: '0.25rem',
+                        paddingLeft: '0.25rem',
+                        background: '#FFFFFF1A',
+                    }}
                 >
                     <img src={logoutIcon} alt="Déconnexion icon" className="mr-3 w-5 h-5" />
-                    <span className="text-lg">Déconnexion</span>
+                    <span>Déconnexion</span>
                 </button>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import CourseCard from '../common/CourseCard';
-import hangingTags from '/assets/svg/hanging-tags.svg'; // Import hangingTags
+import hangingTags from '/assets/svg/hanging-tags.svg';
 
 const coursesData = [
   {
@@ -46,29 +46,26 @@ const CoursesSection = () => {
 
   return (
     <section
-
       className="relative mt-[-20] pt-36 md:pt-44 pb-16 md:pb-24 bg-white mb-[3rem] overflow-visible"
     >
-
       <img
         src={hangingTags}
         alt="Decorative Hanging Tags"
         className="
           absolute
-          top-[-14rem] 
-          right-[12rem] /* Fixed left position as per your coordinates */
-          w-[289px]    /* Fixed width as per your coordinates */
-          h-[500px]    /* Fixed height as per your coordinates */
-          z-[100]      /* Set to a very high z-index to guarantee it's in front of everything */
+          top-[-14rem]
+          right-[12rem]
+          w-[289px]
+          h-[500px]
+          z-[100]
         "
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-
         <h2 className="text-3xl md:text-5xl font-bold text-[#000] text-left mb-12">
           Nos Filières
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredCourses.map((course) => (
             <CourseCard

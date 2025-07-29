@@ -1,45 +1,78 @@
 import React from 'react';
 import Button from './Button';
 
-const CourseCard = ({ image, title, description, icon }) => {
+const pxToRem = (px) => `${(px / 16).toFixed(2)}rem`;
+
+const CourseCard = ({ image, title, description}) => {
   return (
     <div
-      className="bg-white shadow-lg overflow-hidden flex flex-col"
+      className="bg-white overflow-hidden flex flex-col relative"
       style={{
-        width: '376px',         
-        height: '505.78px',     
-        borderRadius: '20px',   
-        paddingTop: '28px',    
-        paddingRight: '38px',
-        paddingBottom: '28px',
-        paddingLeft: '38px',
+        width: pxToRem(376),
+        height: pxToRem(505.78),
+        borderRadius: pxToRem(20),
+        zIndex: 110,
+        boxShadow: 'none',
       }}
     >
-
       {image && (
         <div
-          className="w-full overflow-hidden"
+          className="absolute inset-0 w-full h-full"
           style={{
-            height: '298.78px',      
-            borderRadius: '20px 20px 0 0', 
+            backgroundImage: `url(${image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: pxToRem(20),
           }}
-        >
-          <img
-            src={image}
-            alt={title}
-            className="w-full h-full object-cover object-center"
-          />
-        </div>
+        ></div>
       )}
 
+      <div
+        className="relative flex flex-col"
+        style={{
+          paddingTop: pxToRem(298.78),
+          paddingRight: pxToRem(38),
+          paddingBottom: pxToRem(40),
+          paddingLeft: pxToRem(38),
+          height: '100%',
 
-      <div className="flex flex-col flex-grow mt-4">
+        }}
+      >
+        <h3
+          className="text-[#000000]"
+          style={{
+            width: pxToRem(300),
+            height: pxToRem(29),
+            fontFamily: 'Roboto',
+            fontWeight: 500,
+            fontSize: pxToRem(32),
+            lineHeight: '100%',
+            letterSpacing: pxToRem(0),
+            marginBottom: pxToRem(8),
+          }}
+        >
+          {title}
+        </h3>
 
-        <h3 className="text-xl font-bold text-[#2A3B7C] mb-2">{title}</h3>
+        <p
+          className="text-gray-700"
+          style={{
+            width: pxToRem(300),
+            minHeight: pxToRem(60),
+            fontFamily: 'Roboto',
+            fontWeight: 400,
+            fontSize: pxToRem(20),
+            lineHeight: '100%',
+            letterSpacing: pxToRem(0),
+            verticalAlign: 'middle',
+            marginBottom: pxToRem(12),
+          }}
+        >
+          {description}
+        </p>
 
-        <p className="text-gray-700 text-sm mb-4 flex-grow">{description}</p>
-
-        <div className="mt-auto">
+        <div className="" >
           <Button tertiary size="md">En savoir plus</Button>
         </div>
       </div>

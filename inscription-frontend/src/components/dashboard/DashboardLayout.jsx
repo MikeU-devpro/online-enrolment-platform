@@ -8,7 +8,7 @@ const DashboardLayout = ({ children }) => {
     const userEmail = "student@example.com";
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex h-screen bg-white">
             <DashboardSidebar />
 
             <div className="flex-1 flex flex-col overflow-hidden">
