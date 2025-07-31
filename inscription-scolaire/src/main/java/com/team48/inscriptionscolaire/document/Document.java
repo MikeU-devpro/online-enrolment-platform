@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Document extends BaseEntity {
 
-    private DocumentTypeSubmitted type;
+    private String contentType;
     private String name;
-    @Column(name = "filedata", length = 1000)
+    @Column(name = "filedata", length = 50000000)
     private byte[] fileData;
     //private String storagePath;
     //private long fileSize;

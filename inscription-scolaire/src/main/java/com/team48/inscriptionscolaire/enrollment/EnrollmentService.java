@@ -34,24 +34,17 @@ public class EnrollmentService {
     private final FileUploadConfig fileUploadConfig;
     private final ObjectMapper objectMapper;
 
+    // NOUVEAU : Gère les étapes de l'inscription SANS les fichiers
     @Transactional
-    public EnrollmentDtoResponse startEnrollment(EnrollmentDtoRequest dto) {
-        // Validation de l'année académique
-        if (dto.getAcademicYear() == null || dto.getAcademicYear().isBlank()) {
-            throw new IllegalArgumentException("L'année académique doit être spécifiée");
-        }
-
-        if (!isValidAcademicYear(dto.getAcademicYear())) {
-            throw new IllegalArgumentException("Format d'année académique invalide. Format attendu: YYYY-YYYY");
-        }
-
+    public EnrollmentDtoResponse createOrUpdateEnrollment(EnrollmentDtoRequest dto) {
+        // Logique pour trouver ou créer l'inscription
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
-        var user = userRepository.findByEmail(email).orElseThrow();
-        var student = (Student) user;
-        var program = programRepository.findById(dto.getProgramId()).orElseThrow();
+        var student = (Student) userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        var program = programRepository.findById(dto.getProgramId())
+                .orElseThrow(() -> new EntityNotFoundException("Program not found"));
 
-        // Vérifie si l'inscription existe déjà pour cette année académique
-        var existingEnrollment = enrollmentRepository
+        var enrollment = enrollmentRepository
                 .findByStudentIdAndProgramIdAndAcademicYear(student.getId(), program.getId(), dto.getAcademicYear())
                 .orElseGet(() -> {
                     var newEnrollment = new Enrollment();
@@ -60,32 +53,54 @@ public class EnrollmentService {
                     newEnrollment.setAcademicYear(dto.getAcademicYear());
                     newEnrollment.setStatus(StatusSubmission.IN_PROGRESS);
                     newEnrollment.setCreatedDate(LocalDateTime.now());
-                    return enrollmentRepository.save(newEnrollment);
+                    return newEnrollment;
                 });
 
-        // Update enrollment based on current step
+        // Met à jour l'inscription en fonction de l'étape (sauf pour les documents)
         switch (dto.getCurrentStep()) {
             case 1:
-                updatePersonalInfo(existingEnrollment, dto.getPersonalInfo());
-                break;
-            case 2:
-                handleDocumentUpload(existingEnrollment, dto.getDocumentFiles());
-                break;
+                updatePersonalInfo(enrollment, dto.getPersonalInfo()); break;
             case 3:
-                updateAcademicInfo(existingEnrollment, dto.getAcademicInfo());
-                break;
+                updateAcademicInfo(enrollment, dto.getAcademicInfo()); break;
             case 4:
-                updateContactDetails(existingEnrollment, dto.getContactDetails());
-                break;
+                updateContactDetails(enrollment, dto.getContactDetails()); break;
             case 5:
-                completeEnrollment(existingEnrollment);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid step number");
+                completeEnrollment(enrollment); break;
         }
 
-        return convertToDto(enrollmentRepository.save(existingEnrollment));
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        return convertToDto(savedEnrollment);
     }
+
+    // NOUVEAU : Gère uniquement l'ajout de documents à une inscription existante
+    @Transactional
+    public void addDocumentsToEnrollment(Integer enrollmentId, List<MultipartFile> documentFiles) {
+        if (documentFiles == null || documentFiles.isEmpty()) {
+            throw new IllegalArgumentException("Documents are required");
+        }
+
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + enrollmentId));
+
+        try {
+            List<Document> savedDocuments = new ArrayList<>();
+            for (MultipartFile file : documentFiles) {
+                validateFile(file);
+                Document document = documentService.saveDocument(file);
+                document.setEnrollment(enrollment);
+                savedDocuments.add(document);
+            }
+            if (enrollment.getDocuments() == null) {
+                enrollment.setDocuments(new ArrayList<>());
+            }
+            enrollment.getDocuments().addAll(savedDocuments);
+            enrollment.setStepCompleted(2);
+            enrollmentRepository.save(enrollment);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload documents", e);
+        }
+    }
+
 
     public EnrollmentDtoRequest parseEnrollmentJson(String enrollmentJson) throws JsonProcessingException {
         return objectMapper.readValue(enrollmentJson, EnrollmentDtoRequest.class);
@@ -142,7 +157,7 @@ public class EnrollmentService {
         enrollment.setStepCompleted(3);
     }
 
-    private void handleDocumentUpload(Enrollment enrollment, List<MultipartFile> documentFiles) {
+   /* private void handleDocumentUpload(Enrollment enrollment, List<MultipartFile> documentFiles) {
         if (documentFiles == null || documentFiles.isEmpty()) {
             throw new IllegalArgumentException("Documents are required for this step");
         }
@@ -160,7 +175,7 @@ public class EnrollmentService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload documents", e);
         }
-    }
+    }*/
 
     private void validateFile(MultipartFile file) {
         if (!fileUploadConfig.getAllowedFileTypes().contains(file.getContentType())) {
@@ -282,4 +297,5 @@ public class EnrollmentService {
         dto.setPeopleToContact(contactDetails.getPeopleToContact());
         return dto;
     }
+
 }
