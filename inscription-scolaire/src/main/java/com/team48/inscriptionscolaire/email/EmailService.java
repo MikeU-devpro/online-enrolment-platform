@@ -106,7 +106,7 @@ public class EmailService {
     <body>
         <div class="container">
             <h2>Bonjour %s,</h2>
-            <p>Merci de vous être inscrit à notre plateforme.</p>
+            <p>Merci de vous être inscrit à Ignite Academy.</p>
             <p>Pour activer votre compte, cliquez sur le bouton ci-dessous :</p>
             <a href="%s" class="button">Activer mon compte</a>
             <p>Ou copiez et collez ce lien dans votre navigateur :</p>

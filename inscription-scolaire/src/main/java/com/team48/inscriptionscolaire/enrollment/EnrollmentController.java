@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,19 +19,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/enrollments")
+@RequestMapping("/enrollments")
 @RequiredArgsConstructor
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // NOUVEAU : Endpoint pour créer/mettre à jour les données de l'inscription (sans fichiers)
+    @PostMapping
     @PreAuthorize("hasRole('STUDENT')")
-    public EnrollmentDtoResponse startOrUpdateEnrollment(
-            @RequestPart("enrollment") EnrollmentDtoRequest enrollmentDtoRequest,
-            @RequestPart(value = "documentFiles", required = false) List<MultipartFile> documentFiles) {
+    public ResponseEntity<EnrollmentDtoResponse> createOrUpdateEnrollment(@RequestBody EnrollmentDtoRequest enrollmentDtoRequest) {
+        EnrollmentDtoResponse response = enrollmentService.createOrUpdateEnrollment(enrollmentDtoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-        enrollmentDtoRequest.setDocumentFiles(documentFiles);
-        return enrollmentService.startEnrollment(enrollmentDtoRequest);
+    // MODIFIÉ : Endpoint dédié uniquement au téléversement de documents
+    @PostMapping(value = "/{enrollmentId}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Void> uploadDocuments(
+            @PathVariable Integer enrollmentId,
+            @RequestParam("documents") List<MultipartFile> documents) {
+        enrollmentService.addDocumentsToEnrollment(enrollmentId, documents);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{enrollmentId}")
@@ -37,7 +47,7 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentById(enrollmentId);
     }
 
-    @PostMapping("/{enrollmentId}/documents")
+    /*@PostMapping("/{enrollmentId}/documents")
     public EnrollmentDtoResponse uploadDocuments(
             @PathVariable Integer enrollmentId,
             @RequestParam("files") List<MultipartFile> files) {
@@ -45,7 +55,7 @@ public class EnrollmentController {
         dto.setCurrentStep(3);
         dto.setDocumentFiles(files);
         return enrollmentService.startEnrollment(dto);
-    }
+    }*/
 
     @GetMapping("/my-enrollments")
     public List<EnrollmentDtoResponse> getMyEnrollments() {

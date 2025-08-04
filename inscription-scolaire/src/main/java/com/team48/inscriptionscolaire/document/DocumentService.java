@@ -5,57 +5,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentService {
     private final DocumentRepository repository;
 
-    //store the image to the db
+
     public String uploadImage(MultipartFile file) throws IOException {
-        // Valider le type de fichier d'abord
-        String contentType = file.getContentType();
-        try {
-            DocumentTypeSubmitted type = DocumentTypeSubmitted.fromMimeType(contentType);
 
-            Document fileData = repository.save(
-                    Document.builder()
-                            .name(file.getOriginalFilename())
-                            .type(type)
-                            .fileData(DocumentUtils.compressImage(file.getBytes()))
-                            .build()
-            );
+        Document fileData = repository.save(
+                Document.builder()
+                        .name(file.getOriginalFilename())
+                        .contentType(file.getContentType()) // MODIFIÉ : Utilise la String directement
+                        .fileData(DocumentUtils.compressImage(file.getBytes()))
+                        .build()
+        );
 
-            if (fileData != null) {
-                return "file uploaded successfully : " + file.getOriginalFilename();
-            }
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Type de fichier non supporté: " + contentType +
-                    ". Types supportés: " + Arrays.stream(DocumentTypeSubmitted.values())
-                    .map(DocumentTypeSubmitted::getMimeType)
-                    .collect(Collectors.joining(", ")));
+        if (fileData != null) {
+            return "file uploaded successfully : " + file.getOriginalFilename();
         }
+        return "file upload failed.";
+    }
 
-        return null;
+    // MODIFIÉE : C'est la méthode principale à utiliser
+    public Document saveDocument(MultipartFile file) throws IOException {
+        Document document = new Document();
+        document.setName(file.getOriginalFilename());
+        // CORRECTION : Utilise directement la String du content type
+        document.setContentType(file.getContentType());
+        document.setFileData(DocumentUtils.compressImage(file.getBytes()));
+        // Vous pouvez aussi initialiser d'autres champs ici si nécessaire
+        document.setUploadDate(LocalDateTime.now());
+        document.setValidationStatus(ValidationStatus.PENDING);
+
+        return repository.save(document);
     }
 
     //dowload the image from the db
     public byte[] downloadImage(String fileName){
-
         Optional<Document> dbDocument = repository.findByName(fileName);
-        byte[] images = DocumentUtils.decompressImage(dbDocument.get().getFileData());
-
-        return images;
-    }
-
-    public Document saveDocument(MultipartFile file) throws IOException {
-        Document document = new Document();
-        document.setName(file.getOriginalFilename());
-        document.setType(DocumentTypeSubmitted.valueOf(file.getContentType()));
-        document.setFileData(DocumentUtils.compressImage(file.getBytes()));
-        return repository.save(document);
+        // Utiliser .orElseThrow pour une meilleure gestion des erreurs si le document n'est pas trouvé
+        return dbDocument.map(doc -> DocumentUtils.decompressImage(doc.getFileData()))
+                .orElseThrow(() -> new RuntimeException("Document not found with name: " + fileName));
     }
 }

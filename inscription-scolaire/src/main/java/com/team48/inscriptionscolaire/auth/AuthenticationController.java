@@ -2,13 +2,14 @@ package com.team48.inscriptionscolaire.auth;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 //@RequiredArgsConstructor
 @Tag(name = "Authentication")
 public class AuthenticationController {
@@ -41,5 +42,21 @@ public class AuthenticationController {
             @RequestParam String token
     ) throws MessagingException {
         service.activateAccount(token);
+    }
+
+    // ===================================================================================
+    // =================== ENDPOINT DE DÉCONNEXION AJOUTÉ ================================
+    // ===================================================================================
+
+    /**
+     * Gère la déconnexion de l'utilisateur en invalidant son token.
+     * Le client doit fournir son token JWT valide dans l'en-tête "Authorization".
+     * @param request La requête HTTP entrante.
+     * @return Une réponse 200 OK si la déconnexion a réussi.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        service.logout(request);
+        return ResponseEntity.ok().build();
     }
 }

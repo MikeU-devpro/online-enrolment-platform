@@ -1,6 +1,7 @@
 package com.team48.inscriptionscolaire.enrollment;
 
 import com.team48.inscriptionscolaire.document.Document;
+import com.team48.inscriptionscolaire.document.DocumentDto;
 import com.team48.inscriptionscolaire.document.DocumentService;
 import com.team48.inscriptionscolaire.document.FileUploadConfig;
 import com.team48.inscriptionscolaire.program.ProgramRepository;
@@ -34,24 +35,17 @@ public class EnrollmentService {
     private final FileUploadConfig fileUploadConfig;
     private final ObjectMapper objectMapper;
 
+    // NOUVEAU : Gère les étapes de l'inscription SANS les fichiers
     @Transactional
-    public EnrollmentDtoResponse startEnrollment(EnrollmentDtoRequest dto) {
-        // Validation de l'année académique
-        if (dto.getAcademicYear() == null || dto.getAcademicYear().isBlank()) {
-            throw new IllegalArgumentException("L'année académique doit être spécifiée");
-        }
-
-        if (!isValidAcademicYear(dto.getAcademicYear())) {
-            throw new IllegalArgumentException("Format d'année académique invalide. Format attendu: YYYY-YYYY");
-        }
-
+    public EnrollmentDtoResponse createOrUpdateEnrollment(EnrollmentDtoRequest dto) {
+        // Logique pour trouver ou créer l'inscription
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
-        var user = userRepository.findByEmail(email).orElseThrow();
-        var student = (Student) user;
-        var program = programRepository.findById(dto.getProgramId()).orElseThrow();
+        var student = (Student) userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
+        var program = programRepository.findById(dto.getProgramId())
+                .orElseThrow(() -> new EntityNotFoundException("Program not found"));
 
-        // Vérifie si l'inscription existe déjà pour cette année académique
-        var existingEnrollment = enrollmentRepository
+        var enrollment = enrollmentRepository
                 .findByStudentIdAndProgramIdAndAcademicYear(student.getId(), program.getId(), dto.getAcademicYear())
                 .orElseGet(() -> {
                     var newEnrollment = new Enrollment();
@@ -60,43 +54,67 @@ public class EnrollmentService {
                     newEnrollment.setAcademicYear(dto.getAcademicYear());
                     newEnrollment.setStatus(StatusSubmission.IN_PROGRESS);
                     newEnrollment.setCreatedDate(LocalDateTime.now());
-                    return enrollmentRepository.save(newEnrollment);
+                    return newEnrollment;
                 });
 
-        // Update enrollment based on current step
+        // Met à jour l'inscription en fonction de l'étape (sauf pour les documents)
         switch (dto.getCurrentStep()) {
             case 1:
-                updatePersonalInfo(existingEnrollment, dto.getPersonalInfo());
-                break;
-            case 2:
-                handleDocumentUpload(existingEnrollment, dto.getDocumentFiles());
-                break;
+                updatePersonalInfo(enrollment, dto.getPersonalInfo()); break;
             case 3:
-                updateAcademicInfo(existingEnrollment, dto.getAcademicInfo());
-                break;
+                updateAcademicInfo(enrollment, dto.getAcademicInfo()); break;
             case 4:
-                updateContactDetails(existingEnrollment, dto.getContactDetails());
-                break;
+                updateContactDetails(enrollment, dto.getContactDetails()); break;
             case 5:
-                completeEnrollment(existingEnrollment);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid step number");
+                completeEnrollment(enrollment); break;
         }
 
-        return convertToDto(enrollmentRepository.save(existingEnrollment));
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        return convertToDto(savedEnrollment);
     }
+
+    // NOUVEAU : Gère uniquement l'ajout de documents à une inscription existante
+    @Transactional
+    public void addDocumentsToEnrollment(Integer enrollmentId, List<MultipartFile> documentFiles) {
+        if (documentFiles == null || documentFiles.isEmpty()) {
+            throw new IllegalArgumentException("Documents are required");
+        }
+
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + enrollmentId));
+
+        try {
+            List<Document> savedDocuments = new ArrayList<>();
+            for (MultipartFile file : documentFiles) {
+                validateFile(file);
+                Document document = documentService.saveDocument(file);
+                document.setEnrollment(enrollment);
+                savedDocuments.add(document);
+            }
+            if (enrollment.getDocuments() == null) {
+                enrollment.setDocuments(new ArrayList<>());
+            }
+            enrollment.getDocuments().addAll(savedDocuments);
+            enrollment.setStepCompleted(2);
+            enrollmentRepository.save(enrollment);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload documents", e);
+        }
+    }
+
 
     public EnrollmentDtoRequest parseEnrollmentJson(String enrollmentJson) throws JsonProcessingException {
         return objectMapper.readValue(enrollmentJson, EnrollmentDtoRequest.class);
     }
 
     private void updateContactDetails(Enrollment enrollment, ContactDetailsDto contactDetailsDto) {
-        ContactDetails contactDetails = new ContactDetails();
+        ContactDetails contactDetails = enrollment.getContactDetails() != null ? enrollment.getContactDetails() : new ContactDetails();
+
         contactDetails.setEmail(contactDetailsDto.getEmail());
         contactDetails.setPhoneNumber(contactDetailsDto.getPhoneNumber());
         contactDetails.setAddress(contactDetailsDto.getAddress());
         contactDetails.setPeopleToContact(contactDetailsDto.getPeopleToContact());
+
         enrollment.setContactDetails(contactDetails);
         enrollment.setStepCompleted(4);
     }
@@ -125,42 +143,30 @@ public class EnrollmentService {
     }
 
     private void updatePersonalInfo(Enrollment enrollment, PersonalInfoDto personalInfoDto) {
-        PersonalInfo personalInfo = new PersonalInfo();
+        // On récupère l'objet existant s'il y en a un, sinon on en crée un nouveau
+        PersonalInfo personalInfo = enrollment.getPersonalInfo() != null ? enrollment.getPersonalInfo() : new PersonalInfo();
+
         personalInfo.setFirstName(personalInfoDto.getFirstName());
         personalInfo.setLastName(personalInfoDto.getLastName());
-        personalInfo.setNationality(personalInfoDto.getNationality());
+        personalInfo.setNationality(personalInfoDto.getNationality()); // AJOUT
+        personalInfo.setGender(personalInfoDto.getGender());           // AJOUT
+        personalInfo.setDateOfBirth(personalInfoDto.getDateOfBirth()); // AJOUT
+
         enrollment.setPersonalInfo(personalInfo);
         enrollment.setStepCompleted(1);
     }
 
     private void updateAcademicInfo(Enrollment enrollment, AcademicInfoDto academicInfoDto) {
-        AcademicInfo academicInfo = new AcademicInfo();
+        AcademicInfo academicInfo = enrollment.getAcademicInfo() != null ? enrollment.getAcademicInfo() : new AcademicInfo();
+
         academicInfo.setPreviousSchool(academicInfoDto.getPreviousSchool());
         academicInfo.setDiploma(academicInfoDto.getDiploma());
         academicInfo.setGraduationYear(academicInfoDto.getGraduationYear());
+
         enrollment.setAcademicInfo(academicInfo);
         enrollment.setStepCompleted(3);
     }
 
-    private void handleDocumentUpload(Enrollment enrollment, List<MultipartFile> documentFiles) {
-        if (documentFiles == null || documentFiles.isEmpty()) {
-            throw new IllegalArgumentException("Documents are required for this step");
-        }
-
-        try {
-            List<Document> savedDocuments = new ArrayList<>();
-            for (MultipartFile file : documentFiles) {
-                validateFile(file);
-                Document document = documentService.saveDocument(file); // Retourne l'entité Document sauvegardée
-                document.setEnrollment(enrollment);
-                savedDocuments.add(document);
-            }
-            enrollment.setDocuments(savedDocuments); // Associe les entités Document
-            enrollment.setStepCompleted(2);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload documents", e);
-        }
-    }
 
     private void validateFile(MultipartFile file) {
         if (!fileUploadConfig.getAllowedFileTypes().contains(file.getContentType())) {
@@ -240,6 +246,10 @@ public class EnrollmentService {
         dto.setSubmissionDate(enrollment.getSubmissionDate());
         dto.setValidationDate(enrollment.getValidationDate());
         dto.setAcademicYear(enrollment.getAcademicYear());
+        dto.setCurrentStep(enrollment.getStepCompleted()); // AJOUT
+        dto.setProgramId(enrollment.getProgram().getId());
+        dto.setStudentId(enrollment.getStudent().getId());
+        dto.setProgramName(enrollment.getProgram().getProgramName()); // AJOUT
 
         if (enrollment.getPersonalInfo() != null) {
             dto.setPersonalInfo(convertPersonalInfoToDto(enrollment.getPersonalInfo()));
@@ -253,16 +263,34 @@ public class EnrollmentService {
             dto.setContactDetails(convertContactDetailsToDto(enrollment.getContactDetails()));
         }
 
-        dto.setProgramId(enrollment.getProgram().getId());
-        dto.setStudentId(enrollment.getStudent().getId());
+        // AJOUT : Conversion des documents
+        if (enrollment.getDocuments() != null && !enrollment.getDocuments().isEmpty()) {
+            dto.setDocuments(enrollment.getDocuments().stream()
+                    .map(this::convertDocumentToDto)
+                    .collect(Collectors.toList()));
+        }
 
         return dto;
     }
+
+    private DocumentDto convertDocumentToDto(Document document) {
+        DocumentDto dto = new DocumentDto();
+        dto.setId(document.getId());
+        dto.setName(document.getName());
+        dto.setContentType(document.getContentType());
+        dto.setUploadDate(document.getUploadDate());
+        dto.setValidationStatus(document.getValidationStatus());
+        return dto;
+    }
+
 
     private PersonalInfoDto convertPersonalInfoToDto(PersonalInfo personalInfo) {
         PersonalInfoDto dto = new PersonalInfoDto();
         dto.setFirstName(personalInfo.getFirstName());
         dto.setLastName(personalInfo.getLastName());
+        dto.setNationality(personalInfo.getNationality()); // AJOUT
+        dto.setGender(personalInfo.getGender());           // AJOUT
+        dto.setDateOfBirth(personalInfo.getDateOfBirth()); // AJOUT
         return dto;
     }
 
@@ -282,4 +310,5 @@ public class EnrollmentService {
         dto.setPeopleToContact(contactDetails.getPeopleToContact());
         return dto;
     }
+
 }

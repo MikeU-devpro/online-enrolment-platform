@@ -1,11 +1,14 @@
 #configure server
 server:
   port: 8091
+  servlet:
+    context-path: "/api/v1"
 
 
 #configure spring datasource,jpa, mail and servlet
 spring:
   datasource:
+<<<<<<< HEAD
     url: jdbc:postgresql://localhost:5432/enrolment
     username: mike_react
     password: MIKAHEL
@@ -52,10 +55,10 @@ application:
   security:
     jwt:
       secret-key: C003FA3DC88493379ABFCC2779594D1MYSECRETKEY1233ADMIN
-      expiration: 900000
+      expiration: 3600000 #1h
   mailing:
     frontend:
-      activation-url: http://localhost:4200/activate-account
+      activation-url: http://localhost:5173/activate-account
 
 #configure springdoc (swagger)
 springdoc:

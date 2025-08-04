@@ -15,6 +15,6 @@ public class EnrollmentDtoRequest {
     private AcademicInfoDto academicInfo;
     private ContactDetailsDto contactDetails;
 
-    @Schema(type = "array", format = "binary")
-    private transient List<MultipartFile> documentFiles;
+    /*@Schema(type = "array", format = "binary")
+    private transient List<MultipartFile> documentFiles;*/
 }
