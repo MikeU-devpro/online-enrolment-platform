@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../contexts/UserContext';
 
-const DashboardHeader = ({ pageTitle, userName, userEmail }) => {
+const DashboardHeader = ({ pageTitle }) => {
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
 
-    const displayUserName = userName || 'Nom associé à l\'email';
+    const displayUserName = user?.name || 'Nom associé à l\'email';
 
-    const userInitials = (displayUserName.charAt(0)).toUpperCase();
+    let userInitials = '';
+    if (user && user.name) {
+        const nameParts = user.name.split(' ');
+        if (nameParts.length > 1) {
+            userInitials = `${nameParts[0].charAt(0)}${nameParts[1].charAt(0)}`.toUpperCase();
+        } else {
+            userInitials = nameParts[0].charAt(0).toUpperCase();
+        }
+    }
 
     const BackArrowIcon = '/assets/svg/back-arrow-icon.svg';
     const BellIcon = '/assets/svg/bell-icon.svg';
@@ -34,6 +44,7 @@ const DashboardHeader = ({ pageTitle, userName, userEmail }) => {
                         lineHeight: '143%',
                         letterSpacing: '0.0156rem',
                         fontFamily: 'Roboto, sans-serif',
+                        color: '#1A202C',
                     }}
                 >
                     {pageTitle || 'Tableau de bord'}
@@ -72,8 +83,8 @@ const DashboardHeader = ({ pageTitle, userName, userEmail }) => {
                                 fontSize: '1rem',
                                 lineHeight: '1.5rem',
                                 verticalAlign: 'middle',
-                                fontFamily: 'sans-serif', 
-                                color: '#333333', 
+                                fontFamily: 'sans-serif',
+                                color: '#333333',
                             }}
                         >
                             {displayUserName}

@@ -1,15 +1,14 @@
 import React from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
-
 import AppHeader from './components/layout/AppHeader';
 import AppFooter from './components/layout/AppFooter';
-
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import DashboardPage from './pages/DashboardPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -22,9 +21,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
-
-        <Route path="/dashboard" element={<DashboardPage />} />
-
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       </Routes>
     </div>
   );

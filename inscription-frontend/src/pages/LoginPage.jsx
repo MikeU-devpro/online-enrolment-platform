@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Button from '../components/common/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { jwtDecode } from 'jwt-decode';
+import { UserContext } from '../contexts/UserContext';
 
 const pxToRem = (px) => `${(px / 16).toFixed(2)}rem`;
 
 const LoginPage = () => {
   const navigate = useNavigate();
-
+  const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -32,10 +34,20 @@ const LoginPage = () => {
         password: password,
       });
 
-      console.log('Login successful:', response.data);
       const { token } = response.data;
-
       localStorage.setItem('jwt_token', token);
+
+      const decodedToken = jwtDecode(token);
+      
+      const userFirstName = decodedToken.firstname;
+      const userLastName = decodedToken.lastname;
+      const userEmail = decodedToken.sub;
+
+      const userName = (userFirstName && userLastName) ? `${userFirstName} ${userLastName}` : userEmail;
+      
+      localStorage.setItem('user_name', userName);
+      localStorage.setItem('user_email', userEmail);
+      setUser({ name: userName, email: userEmail });
 
       navigate('/dashboard');
     } catch (err) {

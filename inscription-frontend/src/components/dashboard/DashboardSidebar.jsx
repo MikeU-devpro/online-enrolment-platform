@@ -1,7 +1,9 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const DashboardSidebar = () => {
+    const navigate = useNavigate();
+
     const navItems = [
         { name: 'Tableau de bord', icon: '/assets/svg/dashboard-icon.svg', path: '/dashboard', key: 'dashboard' },
         { name: 'Messagerie', icon: '/assets/svg/mail-icon.svg', path: '/dashboard/messages', key: 'messages' },
@@ -13,6 +15,13 @@ const DashboardSidebar = () => {
     const igniteAcademyLogo = '/assets/images/logo.png';
     const logoutIcon = '/assets/svg/logout-icon.svg';
     const supportBoyImage = '/assets/images/support-boy-with-laptop.png';
+
+    const handleLogout = () => {
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_email');
+        navigate('/login');
+    };
 
     return (
         <div className="flex flex-col p-4 shadow-lg w-[15rem]" style={{ backgroundColor: '#101957' }}>
@@ -57,14 +66,14 @@ const DashboardSidebar = () => {
             </nav>
 
             <div className="mt-auto relative overflow-hidden text-center mx-auto"
-                 style={{
-                     width: '10.63rem',
-                     height: '18rem',
-                     borderRadius: '1.25rem',
-                     background: '#FFFFFF1A',
-                     marginBottom: '1rem',
-                     boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
-                 }}>
+                style={{
+                    width: '10.63rem',
+                    height: '18rem',
+                    borderRadius: '1.25rem',
+                    background: '#FFFFFF1A',
+                    marginBottom: '1rem',
+                    boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
+                }}>
 
                 <div
                     className="absolute z-0"
@@ -98,7 +107,7 @@ const DashboardSidebar = () => {
                 </div>
 
                 <button
-                    className="absolute z-20 text-white shadow-md rounded-[0.25rem] flex items-center justify-center" // Added flex items-center justify-center
+                    className="absolute z-20 text-white shadow-md rounded-[0.25rem] flex items-center justify-center"
                     style={{
                         width: '4.19rem',
                         height: '1.44rem',
@@ -115,7 +124,7 @@ const DashboardSidebar = () => {
 
             <div className="px-2 pb-4">
                 <button
-                    onClick={() => console.log('Disconnect clicked')}
+                    onClick={handleLogout}
                     className="flex items-center justify-center w-full rounded-[0.5rem] hover:bg-[#3A506B] transition-colors duration-200 text-white"
                     style={{
                         width: '12.5rem',

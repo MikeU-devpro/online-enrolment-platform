@@ -8,7 +8,6 @@ server:
 #configure spring datasource,jpa, mail and servlet
 spring:
   datasource:
-<<<<<<< HEAD
     url: jdbc:postgresql://localhost:5432/enrolment
     username: mike_react
     password: MIKAHEL
