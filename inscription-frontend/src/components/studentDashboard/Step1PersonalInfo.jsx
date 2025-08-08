@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../common/Button';
+import Button from '../common/Button.jsx';
 
 const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
     const [nom, setNom] = useState(initialData.nom || '');

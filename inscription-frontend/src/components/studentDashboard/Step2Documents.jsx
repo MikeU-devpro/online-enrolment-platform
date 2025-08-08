@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../common/Button';
-import FileUploadField from '../common/FileUploadField';
+import Button from '../common/Button.jsx';
+import FileUploadField from '../common/FileUploadField.jsx';
 
 const Step2Documents = ({ initialData = {}, onSaveAndNext, onSave, onPrevious }) => {
     const [diplome1, setDiplome1] = useState(initialData.diplome1 || null);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../common/Button';
+import Button from '../common/Button.jsx';
 
 const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious }) => {
     const [email, setEmail] = useState(initialData.email || '');
@@ -89,11 +89,13 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                     <div className="flex">
                         <select
                             id="countryCode"
-                            className="h-[2.98rem] px-[0.5rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
+                            className="h-[2.98rem] pr-[2rem] pl-[0.85rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
                             style={{
+                                backgroundColor: 'rgba(242, 242, 242, 0.6)',
+                                fontSize: '1.5rem',
                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236B4F8B' d='M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 10.586l-3.586-3.586L5 8.293z'/%3E%3C/svg%3E")`,
                                 backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 0.3rem center',
+                                backgroundPosition: 'right 0.85rem center',
                                 backgroundSize: '1.28rem',
                             }}
                             value={countryCode}
@@ -196,11 +198,13 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                     <div className="flex">
                         <select
                             id="emergencyContactCode1"
-                            className="h-[2.98rem] px-[0.5rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
+                            className="h-[2.98rem] pr-[2rem] pl-[0.85rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
                             style={{
+                                backgroundColor: 'rgba(242, 242, 242, 0.6)',
+                                fontSize: '1.5rem',
                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236B4F8B' d='M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 10.586l-3.586-3.586L5 8.293z'/%3E%3C/svg%3E")`,
                                 backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 0.3rem center',
+                                backgroundPosition: 'right 0.85rem center',
                                 backgroundSize: '1.28rem',
                             }}
                             value={emergencyContactCode1}
@@ -225,13 +229,13 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                     <div className="flex">
                         <select
                             id="emergencyContactCode2"
-                            className="h-[2.98rem] px-[0.5rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
+                            className="h-[2.98rem] pr-[2rem] pl-[0.85rem] rounded-l-[0.21rem] border border-r-0 border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
                             style={{
                                 backgroundColor: 'rgba(242, 242, 242, 0.6)',
                                 fontSize: '1.5rem',
                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236B4F8B' d='M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 10.586l-3.586-3.586L5 8.293z'/%3E%3C/svg%3E")`,
                                 backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 0.3rem center',
+                                backgroundPosition: 'right 0.85rem center',
                                 backgroundSize: '1.28rem',
                             }}
                             value={emergencyContactCode2}

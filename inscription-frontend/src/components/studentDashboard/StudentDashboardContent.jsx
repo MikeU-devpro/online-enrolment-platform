@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import CourseCard from './CourseCard';
-import EnrollmentForm from './EnrollmentForm';
+import CourseCard from './CourseCard.jsx';
+import EnrollmentForm from './EnrollmentForm.jsx';
 
 const SearchIcon = '/assets/svg/search-icon.svg';
 
-const CourseDashboard = () => {
+const StudentDashboardContent = () => {
     const [courses] = useState([
         {
             id: '1',
@@ -173,4 +173,4 @@ const CourseDashboard = () => {
     );
 };
 
-export default CourseDashboard;
+export default StudentDashboardContent;

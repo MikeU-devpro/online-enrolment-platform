@@ -1,8 +1,8 @@
 import React from 'react';
-import DashboardSidebar from './DashboardSidebar';
-import DashboardHeader from './DashboardHeader';
+import DashboardSidebar from '../dashboard/DashboardSidebar.jsx';
+import DashboardHeader from '../dashboard/DashboardHeader.jsx';
 
-const DashboardLayout = ({ children }) => {
+const StudentDashboardLayout = ({ children }) => {
   return (
     <div className="flex h-screen bg-white">
       <DashboardSidebar />
@@ -18,4 +18,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default StudentDashboardLayout;

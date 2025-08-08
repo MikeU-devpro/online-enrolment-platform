@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../common/Button';
+import Button from '../common/Button.jsx';
 
 const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious }) => {
     const [lastInstitution, setLastInstitution] = useState(initialData.lastInstitution || '');

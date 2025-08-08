@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import Button from '../common/Button';             // Import from common folder
-import Step1PersonalInfo from './Step1PersonalInfo'; // Step 1
-import Step2Documents from './Step2Documents';     // Step 2
-import Step3AcademicInfo from './Step3AcademicInfo'; // New Step 3 (Academic Info)
-import Step4ContactInfo from './Step4ContactInfo';   // New Step 4 (Contact Info - renamed)
+import Button from '../common/Button.jsx';
+import Step1PersonalInfo from './Step1PersonalInfo.jsx';
+import Step2Documents from './Step2Documents.jsx';
+import Step3AcademicInfo from './Step3AcademicInfo.jsx';
+import Step4ContactInfo from './Step4ContactInfo.jsx';
+import Step5Summary from './Step5Summary.jsx';
 
 const BackArrowIcon = '/assets/svg/back-arrow-icon.svg';
 
@@ -12,9 +13,8 @@ const EnrollmentForm = ({ course, onGoBack }) => {
     const [formData, setFormData] = useState({
         step1: {},
         step2: {},
-        step3: {}, // Data for Academic Info
-        step4: {}, // Data for Contact Info
-        step5: {}, // For future steps
+        step3: {},
+        step4: {},
     });
 
     const totalSteps = 5;
@@ -34,12 +34,8 @@ const EnrollmentForm = ({ course, onGoBack }) => {
 
     const handleNext = (stepName, data) => {
         handleSaveStepData(stepName, data);
-
         if (step < totalSteps) {
             setStep(prevStep => prevStep + 1);
-        } else {
-            console.log('Final Form Data for submission:', formData);
-            alert('Formulaire complet! Données finales soumises.');
         }
     };
 
@@ -48,20 +44,32 @@ const EnrollmentForm = ({ course, onGoBack }) => {
             setStep(prevStep => prevStep - 1);
         }
     };
+    
+    const handleFinish = () => {
+        const finalData = {
+            ...formData.step1,
+            ...formData.step2,
+            ...formData.step3,
+            ...formData.step4,
+        };
+        console.log('Final Form Data for submission:', finalData);
+        alert('Formulaire complet! Données finales soumises.');
+        // Here you would typically send the data to an API
+    };
 
-    // Determine inner box width based on the current step as per new requirements
     let innerBoxWidth;
     switch (step) {
         case 3:
-            innerBoxWidth = '52%'; // Tableau(3).png is Step 3, width 52%
+            innerBoxWidth = '52%';
             break;
         case 4:
-            innerBoxWidth = '93%'; // Tableau(4).png is Step 4, width 93%
+        case 5: // Step 5 also uses the larger width
+            innerBoxWidth = '93%';
             break;
-        case 2: // Existing width for Step 2 Documents
+        case 2:
             innerBoxWidth = '74.7rem';
             break;
-        default: // Default width for Step 1 Personal Info and other steps
+        default:
             innerBoxWidth = '59.4rem';
             break;
     }
@@ -74,6 +82,14 @@ const EnrollmentForm = ({ course, onGoBack }) => {
             </div>
         );
     }
+
+    // Combine data from all steps for the summary page
+    const combinedFormData = {
+        ...formData.step1,
+        ...formData.step2,
+        ...formData.step3,
+        ...formData.step4,
+    };
 
     return (
         <div // Outer Bigger Box
@@ -131,9 +147,9 @@ const EnrollmentForm = ({ course, onGoBack }) => {
                     >
                         {step === 1 && "Informations Personnelles"}
                         {step === 2 && "Documents Officiels"}
-                        {step === 3 && "Parcours Académique"} {/* Corrected heading */}
-                        {step === 4 && "Coordonnées Personnelles"} {/* Corrected heading */}
-                        {step === 5 && "Récapitulatif & Paiement"}
+                        {step === 3 && "Parcours Académique"}
+                        {step === 4 && "Coordonnées Personnelles"}
+                        {step === 5 && "Confirmation & Récapitulatif"}
                     </h3>
                     <div className="flex justify-between items-center mt-2">
                         {Array.from({ length: totalSteps }).map((_, index) => (
@@ -199,13 +215,11 @@ const EnrollmentForm = ({ course, onGoBack }) => {
                     />
                 )}
                 {step === 5 && (
-                    <div className="p-8 text-center text-gray-600">
-                        <h3>Étape 5: Récapitulatif & Paiement (À implémenter)</h3>
-                        <div className="flex justify-between gap-4 mt-8">
-                            <Button secondary type="button" onClick={handlePrevious} className="flex-1 !w-auto !h-auto font-semibold text-[1.28rem]">Précédent</Button>
-                            <Button primary type="button" onClick={() => handleNext('step5', {})} className="flex-1 !w-auto !h-auto font-semibold text-[1.28rem]">Terminer l'inscription</Button>
-                        </div>
-                    </div>
+                    <Step5Summary
+                        formData={combinedFormData}
+                        onPrevious={handlePrevious}
+                        onFinish={handleFinish}
+                    />
                 )}
             </div>
         </div>
