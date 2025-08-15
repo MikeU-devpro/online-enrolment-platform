@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# .gitignore
+*.env
+*.key
+*.pem
+credentials.json
+
+# Ignore profile-specific properties with secrets
+application-dev.properties

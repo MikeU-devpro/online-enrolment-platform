@@ -7,10 +7,12 @@ server:
 
 #configure spring datasource,jpa, mail and servlet
 spring:
+  profiles:
+    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/inscription_db
     username: postgres
-    password: sandra
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -27,7 +29,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: lenguesandra@gmail.com
-    password: ohqh nkcm ebpe lplz
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -42,6 +44,7 @@ spring:
 
 
 
+
 #configure application
 application:
   upload:
@@ -53,7 +56,7 @@ application:
     allowed-extensions: [ pdf, docx, jpg, jpeg, png ]
   security:
     jwt:
-      secret-key: C003FA3DC88493379ABFCC2779594D1MYSECRETKEY1233ADMIN
+      secret-key: ${SECRET_KEY}
       expiration: 3600000 #1h
   mailing:
     frontend:
@@ -62,13 +65,4 @@ application:
 #configure springdoc (swagger)
 springdoc:
   default-produces-media-type: application/json
-#  swagger-ui:
-#    try-it-out-enabled: true
-#    persist-authorization: true
-#    filter: true
-#    request-snippets-enabled: true
-#    syntax-highlight:
-#      activate: true
-#      theme: "agate"
-
 
