@@ -7,8 +7,6 @@ server:
 
 #configure spring datasource,jpa, mail and servlet
 spring:
-  profiles:
-    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/inscription_db
     username: postgres
@@ -65,4 +63,14 @@ application:
 #configure springdoc (swagger)
 springdoc:
   default-produces-media-type: application/json
+
+
+#configure stripe paiement integration
+stripe:
+  secret:
+    key: ${STRIPE_SECRET_KEY}
+  public:
+    key: ${STRIPE_PUBLIC_KEY}
+
+
 

@@ -38,5 +38,3 @@ build/
 *.pem
 credentials.json
 
-# Ignore profile-specific properties with secrets
-application-dev.properties
