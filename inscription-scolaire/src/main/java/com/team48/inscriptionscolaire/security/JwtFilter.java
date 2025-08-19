@@ -38,9 +38,12 @@ public class JwtFilter extends OncePerRequestFilter {
         final String servletPath = request.getServletPath();
 
         // MODIFICATION : Condition plus précise pour les chemins publics
-        if (servletPath.equals("/auth/login") ||
+        if (
+                servletPath.equals("/auth/login") ||
                 servletPath.equals("/auth/signup") ||
-                servletPath.equals("/auth/activate-account")) {
+                servletPath.equals("/auth/activate-account") ||
+                servletPath.startsWith("/payment")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# .gitignore
+*.env
+*.key
+*.pem
+credentials.json
+
