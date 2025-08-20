@@ -1,75 +1,93 @@
 import React from 'react';
 import StatsCard from '../common/StatsCard';
-
-const RealTimeStats = () => <div className="bg-[#FFFFFF] p-6 rounded-[0.53rem] shadow">
-    <h4 className="text-[#101957] font-semibold text-[1.5rem] mb-4">Statistiques en Temps Réel</h4>
-    <p>Composant de statistiques en temps réel...</p>
-</div>;
-const EnrollmentDensityChart = () => <div className="bg-[#FFFFFF] p-6 rounded-[0.53rem] shadow">
-    <h4 className="text-[#101957] font-semibold text-[1.5rem] mb-4">Densité des Inscriptions par Filière</h4>
-    <p>Composant du graphique de densité...</p>
-</div>;
-const EnrollmentStatusChart = () => <div className="bg-[#FFFFFF] p-6 rounded-[0.53rem] shadow">
-    <h4 className="text-[#101957] font-semibold text-[1.5rem] mb-4">Statut des Inscriptions</h4>
-    <p>Composant du graphique de statut...</p>
-</div>;
-const StepProgressChart = () => <div className="bg-[#FFFFFF] p-6 rounded-[0.53rem] shadow">
-    <h4 className="text-[#101957] font-semibold text-[1.5rem] mb-4">Progression des Étapes</h4>
-    <p>Composant du graphique de progression...</p>
-</div>;
-const PendingDocuments = () => <div className="bg-[#FFFFFF] p-6 rounded-[0.53rem] shadow">
-    <h4 className="text-[#101957] font-semibold text-[1.5rem] mb-4">Documents en Attente de Traitement</h4>
-    <p>Composant des documents en attente...</p>
-</div>;
+import RealTimeStats from '../common/RealTimeStats';
+import EnrollmentDensityChart from '../common/EnrollmentDensityChart';
+import PendingDocuments from '../common/PendingDocuments';
+import EnrollmentStatusChart from '../common/EnrollmentStatusChart';
+import StepProgressChart from '../common/StepProgressChart';
+import EnrollmentByFieldChart from '../common/EnrollmentByFieldChart';
+import AdminMessage from '../common/AdminMessage';
+import BandwidthStats from '../common/BandwidthStats';
 
 const AdminDashboardContent = () => {
     return (
         <div className="p-8" style={{ backgroundColor: '#F8F8F8' }}>
-            <h2 className="text-[#101957] text-[2.5rem] font-bold mb-8" style={{ fontFamily: 'Roboto, sans-serif' }}>Statistiques</h2>
+            <h2 className="text-[#101957] text-[2.5rem] font-bold mb-4" style={{ fontFamily: 'Roboto, sans-serif' }}>Statistiques</h2>
+            
+            <div
+                className="w-full"
+                style={{
+                    height: '5px',
+                    backgroundColor: '#101957',
+                    borderRadius: '8px',
+                    marginBottom: '2rem',
+                }}
+            ></div>
 
-            {/* Top section: Quick Overview, Real-time Stats, and Enrollment Density */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
-                {/* Quick Overview Cards */}
-                <div className="col-span-1 grid grid-rows-2 gap-6">
-                    <StatsCard title="Inscriptions Totales" value="52" color="bg-[#6B4F8B]" />
-                    <StatsCard title="En Attente de Validation" value="08" color="bg-[#6B4F8B]" />
-                </div>
-                <div className="col-span-1 grid grid-rows-2 gap-6">
-                    <StatsCard title="Inscriptions Validées" value="17" color="bg-[#6B4F8B]" />
-                    <StatsCard title="Nouveaux Comptes (24h)" value="31" color="bg-[#6B4F8B]" />
+            {/* Main two-column layout */}
+            <div className="flex gap-6">
+                {/* Left side column */}
+                <div className="flex flex-col gap-6 flex-grow">
+                    {/* Top part of the left side */}
+                    <div className="flex gap-6 flex-grow">
+                        {/* Vue d'Ensemble Rapide container */}
+                        <div
+                            className="flex-grow flex-col p-4 rounded-[0.75rem] shadow"
+                            style={{
+                                backgroundColor: '#1019574D',
+                                gap: '0.5rem',
+                                color: '#101957'
+                            }}
+                        >
+                            <h3 className="font-bold text-[1.5rem] mb-2">Vue d'Ensemble Rapide</h3>
+                            <div className="grid grid-cols-2 gap-[0.5rem] flex-grow">
+                                <StatsCard title="Inscriptions Totales" value="52" color="bg-[#FFFFFF]" shadowColor="#101957" />
+                                <StatsCard title="Inscriptions Validées" value="17" color="bg-[#FFFFFF]" shadowColor="#101957" />
+                                <StatsCard title="En Attente de Validation" value="08" color="bg-[#FFFFFF]" shadowColor="#101957" />
+                                <StatsCard title="Nouveaux Comptes (24h)" value="31" color="bg-[#FFFFFF]" shadowColor="#101957" />
+                            </div>
+                        </div>
+
+                        {/* Real-time Stats container */}
+                        <div className="flex-grow">
+                            <RealTimeStats />
+                        </div>
+                    </div>
+
+                    {/* Middle part of the left side */}
+                    <div className="flex gap-6 flex-grow">
+                        {/* Container for the two smaller charts */}
+                        <div className="flex flex-col gap-6" style={{ flexBasis: '33.333%', flexGrow: 1 }}>
+                            <div className="flex-grow">
+                                <EnrollmentStatusChart />
+                            </div>
+                            <div className="flex-grow">
+                                <EnrollmentByFieldChart />
+                            </div>
+                        </div>
+                        {/* Container for the larger chart */}
+                        <div className="flex-grow" style={{ flexBasis: '66.666%', flexGrow: 2 }}>
+                            <StepProgressChart />
+                        </div>
+                    </div>
+
+                    {/* Bottom part of the left side */}
+                    <div className="flex flex-row gap-6">
+                        <AdminMessage />
+                        <BandwidthStats />
+                    </div>
                 </div>
 
-                {/* Real-time Stats */}
-                <div className="col-span-1 flex flex-col gap-6">
-                    <RealTimeStats />
-                </div>
-
-                {/* Enrollment Density */}
-                <div className="col-span-1 flex flex-col gap-6">
-                    <EnrollmentDensityChart />
+                {/* Right side column */}
+                <div className="flex flex-col gap-6" style={{ flexBasis: '25%' }}>
+                    <div className="flex-grow">
+                        <EnrollmentDensityChart />
+                    </div>
+                    <div className="flex-grow">
+                        <PendingDocuments />
+                    </div>
                 </div>
             </div>
-
-            {/* Middle section: Charts */}
-            <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="col-span-1">
-                    <EnrollmentStatusChart />
-                </div>
-                <div className="col-span-1">
-                    <StepProgressChart />
-                </div>
-            </div>
-
-            {/* Bottom section: Pending Documents */}
-            <div className="grid grid-cols-3 gap-6">
-                <div className="col-span-1">
-                    <EnrollmentStatusChart />
-                </div>
-                <div className="col-span-1">
-                    <PendingDocuments />
-                </div>
-            </div>
-
         </div>
     );
 };

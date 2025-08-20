@@ -1,8 +1,9 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import DashboardSidebar from '../dashboard/DashboardSidebar';
 import DashboardHeader from '../dashboard/DashboardHeader';
 
-const AdminDashboardLayout = ({ children }) => {
+const AdminDashboardLayout = () => {
     return (
         <div className="flex h-screen bg-white">
             <DashboardSidebar />
@@ -11,7 +12,7 @@ const AdminDashboardLayout = ({ children }) => {
                     pageTitle="Tableau de bord - Admin"
                 />
                 <main className="flex-1 overflow-y-auto p-6">
-                    {children}
+                    <Outlet />
                 </main>
             </div>
         </div>

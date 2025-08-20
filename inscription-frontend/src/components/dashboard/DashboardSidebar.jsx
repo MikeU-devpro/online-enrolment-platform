@@ -5,7 +5,8 @@ const DashboardSidebar = () => {
     const navigate = useNavigate();
 
     const navItems = [
-        { name: 'Tableau de bord', icon: '/assets/svg/dashboard-icon.svg', path: '/dashboard', key: 'dashboard' },
+        { name: 'Tableau de bord', icon: '/assets/svg/dashboard-icon.svg', path: '/admin-dashboard', key: 'admin-dashboard' },
+        { name: 'Gestion des Inscriptions', icon: '/assets/svg/mail-icon.svg', path: '/admin-dashboard/enrollment-management', key: 'enrollment-management' },
         { name: 'Messagerie', icon: '/assets/svg/mail-icon.svg', path: '/dashboard/messages', key: 'messages' },
         { name: 'Paramètres', icon: '/assets/svg/settings-icon.svg', path: '/dashboard/settings', key: 'settings' },
         { name: 'FAQ', icon: '/assets/svg/faq-icon.svg', path: '/dashboard/faq', key: 'faq' },
@@ -55,7 +56,7 @@ const DashboardSidebar = () => {
                                     lineHeight: '1.5rem',
                                     letterSpacing: 'normal',
                                 }}
-                                end={item.path === '/dashboard'}
+                                end={item.path === '/admin-dashboard'}
                             >
                                 <img src={item.icon} alt={`${item.name} icon`} className="mr-3 w-5 h-5" />
                                 <span>{item.name}</span>
@@ -74,7 +75,6 @@ const DashboardSidebar = () => {
                     marginBottom: '1rem',
                     boxShadow: '0px 0px 4px 0px rgba(0, 0, 0, 0.25)',
                 }}>
-
                 <div
                     className="absolute z-0"
                     style={{
