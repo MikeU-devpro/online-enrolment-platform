@@ -1,4 +1,3 @@
-import React from 'react';
 import Hero from '../components/sections/Hero';
 import CoursesSection from '../components/sections/CoursesSection';
 import ContactSection from '../components/sections/ContactSection';

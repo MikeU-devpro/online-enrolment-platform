@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route, Outlet, useNavigate } from 'react-router-dom';
 import AppHeader from './components/layout/AppHeader';
 import AppFooter from './components/layout/AppFooter';
@@ -18,15 +17,37 @@ import ProgramManagement from './components/adminDashboard/ProgramManagement';
 import ProgramForm from './components/adminDashboard/ProgramForm';
 import UserManagement from './components/adminDashboard/UserManagement';
 import UserForm from './components/adminDashboard/UserForm';
-import AdminFAQ from './components/adminDashboard/AdminFAQ'; // New import
-import AdminHelp from './components/adminDashboard/AdminHelp'; // New import
+import AdminFAQ from './components/adminDashboard/AdminFAQ';
+import AdminHelp from './components/adminDashboard/AdminHelp';
 
 // Student Dashboard Imports
 import StudentDashboardLayout from './components/studentDashboard/StudentDashboardLayout';
 import StudentDashboardContent from './components/studentDashboard/StudentDashboardContent';
-import StudentFAQ from './components/studentDashboard/StudentFAQ'; // New import
-import StudentHelp from './components/studentDashboard/StudentHelp'; // New import
+import StudentFAQ from './components/studentDashboard/StudentFAQ';
+import StudentHelp from './components/studentDashboard/StudentHelp';
 
+
+// This layout component will render the header and a larger footer
+const AppLayoutWithLargeFooter = () => (
+    <>
+        <AppHeader />
+        <main className="flex-1 overflow-auto">
+            <Outlet />
+        </main>
+        <AppFooter variant="large" />
+    </>
+);
+
+// This layout component will render the header and a standard (default) footer
+const AppLayoutWithDefaultFooter = () => (
+    <>
+        <AppHeader />
+        <main className="flex-1 overflow-auto">
+            <Outlet />
+        </main>
+        <AppFooter variant="default" />
+    </>
+);
 
 function App() {
     const navigate = useNavigate();
@@ -42,8 +63,13 @@ function App() {
     return (
         <div className="App flex flex-col min-h-screen">
             <Routes>
-                <Route element={<AppLayoutWithHeaderFooter />}>
+                {/* Routes with a large footer, only the HomePage in this case */}
+                <Route element={<AppLayoutWithLargeFooter />}>
                     <Route path="/" element={<HomePage />} />
+                </Route>
+
+                {/* Routes with a smaller, default footer */}
+                <Route element={<AppLayoutWithDefaultFooter />}>
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -79,15 +105,5 @@ function App() {
         </div>
     );
 }
-
-const AppLayoutWithHeaderFooter = () => (
-    <>
-        <AppHeader />
-        <main className="flex-1 overflow-auto">
-            <Outlet />
-        </main>
-        <AppFooter />
-    </>
-);
 
 export default App;
