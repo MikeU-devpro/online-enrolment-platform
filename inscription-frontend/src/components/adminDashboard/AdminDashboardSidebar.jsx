@@ -1,16 +1,19 @@
+// src/components/adminDashboard/AdminDashboardSidebar.jsx
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-const DashboardSidebar = () => {
+const AdminDashboardSidebar = () => {
     const navigate = useNavigate();
 
     const navItems = [
         { name: 'Tableau de bord', icon: '/assets/svg/dashboard-icon.svg', path: '/admin-dashboard', key: 'admin-dashboard' },
         { name: 'Gestion des Inscriptions', icon: '/assets/svg/mail-icon.svg', path: '/admin-dashboard/enrollment-management', key: 'enrollment-management' },
-        { name: 'Messagerie', icon: '/assets/svg/mail-icon.svg', path: '/dashboard/messages', key: 'messages' },
-        { name: 'Paramètres', icon: '/assets/svg/settings-icon.svg', path: '/dashboard/settings', key: 'settings' },
-        { name: 'FAQ', icon: '/assets/svg/faq-icon.svg', path: '/dashboard/faq', key: 'faq' },
-        { name: 'Aide', icon: '/assets/svg/help-icon.svg', path: '/dashboard/help', key: 'help' },
+        { name: 'Gestion des Filières', icon: '/assets/svg/book-icon.svg', path: '/admin-dashboard/program-management', key: 'program-management' },
+        { name: 'Gestion des Utilisateurs', icon: '/assets/svg/user-management-icon.svg', path: '/admin-dashboard/user-management', key: 'user-management' },
+        { name: 'Messagerie', icon: '/assets/svg/mail-icon.svg', path: '/admin-dashboard/messages', key: 'messages' },
+        { name: 'Paramètres', icon: '/assets/svg/settings-icon.svg', path: '/admin-dashboard/settings', key: 'settings' },
+        { name: 'FAQ', icon: '/assets/svg/faq-icon.svg', path: '/admin-dashboard/faq', key: 'faq' },
+        { name: 'Aide', icon: '/assets/svg/help-icon.svg', path: '/admin-dashboard/help', key: 'help' },
     ];
 
     const igniteAcademyLogo = '/assets/images/logo.png';
@@ -143,4 +146,4 @@ const DashboardSidebar = () => {
     );
 };
 
-export default DashboardSidebar;
+export default AdminDashboardSidebar;
