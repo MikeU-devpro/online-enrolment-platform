@@ -44,6 +44,10 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
     };
 
     const collectData = () => {
+        // Flatten the emergencyContacts array into individual keys
+        const emergencyContact1 = emergencyContacts[0];
+        const emergencyContact2 = emergencyContacts[1];
+
         return {
             email,
             phoneNumber,
@@ -52,7 +56,14 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
             region,
             city,
             address,
-            emergencyContacts, // Now a list of objects
+            emergencyContactName1: emergencyContact1.name,
+            emergencyContactPhone1: emergencyContact1.phone,
+            emergencyContactCode1: emergencyContact1.code,
+            emergencyContactRelationship1: emergencyContact1.relationship,
+            emergencyContactName2: emergencyContact2.name,
+            emergencyContactPhone2: emergencyContact2.phone,
+            emergencyContactCode2: emergencyContact2.code,
+            emergencyContactRelationship2: emergencyContact2.relationship,
         };
     };
 

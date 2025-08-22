@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/enrollments") // Corrected base URL to match your frontend API file
+@RequestMapping("/api/v1/enrollments")
 @RequiredArgsConstructor
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
@@ -64,10 +64,11 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentsByProgram(programId);
     }
 
-    @PatchMapping("/{enrollmentId}/validate")
+    // FIX: Changed from 'validateEnrollment' to 'approveEnrollment' to match the EnrollmentService
+    @PatchMapping("/{enrollmentId}/approve")
     @PreAuthorize("hasRole('ADMIN')")
-    public EnrollmentDtoResponse validateEnrollment(@PathVariable Integer enrollmentId) {
-        return enrollmentService.validateEnrollment(enrollmentId);
+    public EnrollmentDtoResponse approveEnrollment(@PathVariable Integer enrollmentId) {
+        return enrollmentService.approveEnrollment(enrollmentId);
     }
 
     @GetMapping("/year/{academicYear}")

@@ -109,7 +109,17 @@ const StudentDashboardContent = () => {
     const handleViewStatus = () => {
         setDisplayMode('status');
     };
-    
+
+    // The new function to handle form submission
+    const handleFormSubmitted = (formData) => {
+        console.log("Form submitted with data:", formData);
+        // You would typically handle the API call here
+        // After submission, you might want to show a success message
+        // and/or redirect the user. For now, let's just go back to the course list.
+        alert("Votre dossier d'inscription a été soumis avec succès !");
+        handleGoBackToCourses();
+    };
+
     // Determine the content to display based on enrollment status
     const renderContent = () => {
         if (loading) {
@@ -127,7 +137,11 @@ const StudentDashboardContent = () => {
 
         if (displayMode === 'enrollment') {
             return (
-                <EnrollmentForm course={selectedCourse} onGoBack={handleGoBackToCourses} />
+                <EnrollmentForm
+                    course={selectedCourse}
+                    onGoBack={handleGoBackToCourses}
+                    onFormSubmitted={handleFormSubmitted} // Pass the new handler here
+                />
             );
         }
 

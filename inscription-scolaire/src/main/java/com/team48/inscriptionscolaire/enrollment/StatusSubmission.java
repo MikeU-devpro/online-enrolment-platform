@@ -7,5 +7,6 @@ public enum StatusSubmission {
     PENDING,
     DOCUMENTS_UNDER_REVIEW,
     APPROVED,
-    REJECTED
+    REJECTED,
+    CORRECTIONS_REQUIRED
 }

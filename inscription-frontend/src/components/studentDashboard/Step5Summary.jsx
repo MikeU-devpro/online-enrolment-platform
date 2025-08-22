@@ -114,8 +114,9 @@ const Step5Summary = ({ formData, onPrevious, onFinish }) => {
                     Documents Officiels
                 </h3>
                 <div className="grid grid-cols-2 gap-x-[1.28rem] gap-y-[1.28rem]">
-                    <DocumentSummaryField label='Dernier diplôme obtenu "1"' fileState={{ file: formData.diplome1, status: 'uploaded' }} />
-                    <DocumentSummaryField label='Dernier diplôme obtenu "2" (Facultatif)' fileState={{ file: formData.diplome2, status: formData.diplome2 ? 'uploaded' : null }} />
+                    {/* Updated to correctly reference the formData */}
+                    <DocumentSummaryField label='Dernier diplôme obtenu "1"' fileState={formData.diplome1} />
+                    <DocumentSummaryField label='Dernier diplôme obtenu "2" (Facultatif)' fileState={formData.diplome2} />
                     <DocumentSummaryField label='Photocopie CNI Recto' fileState={formData.cniRecto} />
                     <DocumentSummaryField label='Photocopie CNI Verso' fileState={formData.cniVerso} />
                     <DocumentSummaryField label='Acte de naissance' fileState={formData.acteNaissance} />
@@ -165,7 +166,7 @@ const Step5Summary = ({ formData, onPrevious, onFinish }) => {
                             Montant des frais d'inscription :
                         </span>
                         <span className="text-[#101957] font-semibold" style={{ fontFamily: 'Roboto, sans-serif', fontSize: '1.5rem' }}>
-                            150$
+                            50000fcfa
                         </span>
                     </div>
                 </div>

@@ -24,6 +24,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
             String academicYear
     );
 
+    Optional<Enrollment> findTopByStudentIdOrderByCreatedDateDesc(Integer studentId);
+
     // Custom query to find a student's enrollment status based on their ID.
     @Query("SELECT e.status FROM Enrollment e WHERE e.student.id = :studentId")
     Optional<StatusSubmission> findStatusByStudentId(@Param("studentId") Integer studentId);

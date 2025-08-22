@@ -52,14 +52,8 @@ const Step2Documents = ({ initialData = {}, onSaveAndNext, onSave, onPrevious })
     };
 
     const collectData = () => {
-        // Collect all non-null files into a single list
-        const fileList = Object.values(documents)
-            .filter(doc => doc && doc.file)
-            .map(doc => doc.file);
-
-        return {
-            documents: fileList
-        };
+        // Return the entire documents object with its named keys
+        return documents;
     };
 
     const handleSaveClick = () => {

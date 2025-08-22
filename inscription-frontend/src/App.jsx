@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, Outlet, useNavigate } from 'react-router-dom';
 import AppHeader from './components/layout/AppHeader';
 import AppFooter from './components/layout/AppFooter';
 import HomePage from './pages/HomePage';
@@ -7,7 +7,8 @@ import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import CourseDetail from './pages/CourseDetail';
+import CourseDetail from './pages/CourseDetail'; // This import was missing!
+
 
 // Admin Dashboard Imports
 import AdminDashboardLayout from './components/adminDashboard/AdminDashboardLayout';
@@ -27,6 +28,8 @@ import StudentDashboardContent from './components/studentDashboard/StudentDashbo
 import StudentFAQ from './components/studentDashboard/StudentFAQ';
 import StudentHelp from './components/studentDashboard/StudentHelp';
 
+
+// This layout component will render the header and a larger footer
 const AppLayoutWithLargeFooter = () => (
     <>
         <AppHeader />
@@ -37,6 +40,7 @@ const AppLayoutWithLargeFooter = () => (
     </>
 );
 
+// This layout component will render the header and a standard (default) footer
 const AppLayoutWithDefaultFooter = () => (
     <>
         <AppHeader />
@@ -61,10 +65,12 @@ function App() {
     return (
         <div className="App flex flex-col min-h-screen">
             <Routes>
+                {/* Routes with a large footer, only the HomePage in this case */}
                 <Route element={<AppLayoutWithLargeFooter />}>
                     <Route path="/" element={<HomePage />} />
                 </Route>
 
+                {/* Routes with a smaller, default footer */}
                 <Route element={<AppLayoutWithDefaultFooter />}>
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/login" element={<LoginPage />} />
@@ -72,14 +78,17 @@ function App() {
                     <Route path="/verify-email" element={<VerifyEmailPage />} />
                     <Route path="/courses/:courseName" element={<CourseDetail />} />
                 </Route>
-
-                {/* Dashboard routes nested directly within ProtectedRoute */}
+                
+                {/* Student Dashboard Routes */}
                 <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboardLayout /></ProtectedRoute>}>
                     <Route index element={<StudentDashboardContent />} />
+                    <Route path="messages" element={<div>Messagerie pour étudiant</div>} /> {/* Placeholder */}
+                    <Route path="settings" element={<div>Paramètres pour étudiant</div>} /> {/* Placeholder */}
                     <Route path="faq" element={<StudentFAQ />} />
                     <Route path="help" element={<StudentHelp />} />
                 </Route>
-
+                
+                {/* Admin Dashboard Routes */}
                 <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboardLayout /></ProtectedRoute>}>
                     <Route index element={<AdminDashboardContent />} />
                     <Route path="enrollment-management" element={<StudentEnrollmentManagement onViewDetails={handleViewDetails} />} />
@@ -90,6 +99,8 @@ function App() {
                     <Route path="user-management" element={<UserManagement />} />
                     <Route path="user-management/add" element={<UserForm />} />
                     <Route path="user-management/edit/:id" element={<UserForm />} />
+                    <Route path="messages" element={<div>Messagerie pour administrateur</div>} />
+                    <Route path="settings" element={<div>Paramètres pour administrateur</div>} />
                     <Route path="faq" element={<AdminFAQ />} />
                     <Route path="help" element={<AdminHelp />} />
                 </Route>

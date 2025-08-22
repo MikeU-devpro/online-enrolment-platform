@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/v1/notifications'; // Replace with your actual backend URL
+const API_URL = 'http://localhost:8091/api/v1/notifications'; // Replace with your actual backend URL
 
 const getToken = () => {
     return localStorage.getItem('jwt_token');

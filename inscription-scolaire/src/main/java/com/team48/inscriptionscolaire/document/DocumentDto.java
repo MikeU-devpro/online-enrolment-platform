@@ -22,5 +22,6 @@ public class DocumentDto {
     private String contentType;
     private LocalDateTime uploadDate;
     private ValidationStatus validationStatus;
-    private String documentType; // Added this field to resolve the error
+    private String documentType;
+    private String rejectionReason;
 }

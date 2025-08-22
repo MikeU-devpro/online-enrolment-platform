@@ -14,7 +14,8 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
         if (initialData) {
             setLastInstitution(initialData.lastInstitution || '');
             setSpecialization(initialData.specialization || 'Oncogénétique');
-            setAvailableForInternship(initialData.availableForInternship || null);
+            // Ensure the initial data is correctly converted back to a boolean if it's a string
+            setAvailableForInternship(typeof initialData.availableForInternship === 'boolean' ? initialData.availableForInternship : null);
             setStartDate(initialData.startDate || '');
             setEndDate(initialData.endDate || '');
         }
@@ -97,9 +98,9 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
                                 name="availableForInternship"
-                                value={true}
-                                checked={availableForInternship === true}
-                                onChange={() => setAvailableForInternship(true)}
+                                value="true" // HTML value is a string
+                                checked={availableForInternship === true} // Compare against the boolean state
+                                onChange={() => setAvailableForInternship(true)} // Set the state as a boolean
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Oui</span>
                         </label>
@@ -108,9 +109,9 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
                                 name="availableForInternship"
-                                value={false}
-                                checked={availableForInternship === false}
-                                onChange={() => setAvailableForInternship(false)}
+                                value="false" // HTML value is a string
+                                checked={availableForInternship === false} // Compare against the boolean state
+                                onChange={() => setAvailableForInternship(false)} // Set the state as a boolean
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Non</span>
                         </label>

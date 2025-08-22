@@ -35,11 +35,13 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
 
     const collectData = () => {
         return {
-            firstName,
-            lastName,
-            gender,
-            dateOfBirth,
-            nationality
+            // Correctly map state variables to DTO/summary keys
+            nom: lastName,
+            prenom: firstName,
+            sexe: gender,
+            dateNaissance: dateOfBirth,
+            nationalite: nationality,
+            typePieceIdentite: typePieceIdentite, // Add this to the data payload
         };
     };
 
@@ -55,10 +57,10 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
         <>
             <div className="grid grid-cols-1 gap-[1.28rem]">
                 <div>
-                    <label htmlFor="firstName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom</label>
+                    <label htmlFor="lastName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom</label>
                     <input
                         type="text"
-                        id="firstName"
+                        id="lastName"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez votre nom"
@@ -68,10 +70,10 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="lastName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Prénom</label>
+                    <label htmlFor="firstName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Prénom</label>
                     <input
                         type="text"
-                        id="lastName"
+                        id="firstName"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez votre prénom"

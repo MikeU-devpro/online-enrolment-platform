@@ -75,7 +75,7 @@ public class EnrollmentService {
     }
 
     @Transactional
-    private void completeEnrollment(Enrollment enrollment) {
+    public void completeEnrollment(Enrollment enrollment) {
         if (enrollment.getPersonalInfo() == null ||
                 enrollment.getAcademicInfo() == null ||
                 enrollment.getContactDetails() == null) {
