@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { getNotifications, markAllAsRead } from '../../services/notificationService'; // Corrected import path
+import { useAuth } from '../../hooks/useAuth';
 
 const DashboardHeader = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [userName, setUserName] = useState('');
     const [userInitials, setUserInitials] = useState('');
+    const [unreadCount, setUnreadCount] = useState(0);
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const token = localStorage.getItem('jwt_token');
@@ -16,26 +20,38 @@ const DashboardHeader = () => {
                 const firstName = decodedToken.firstname || '';
                 const lastName = decodedToken.lastname || '';
                 
-                // Construct the full name
                 const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : decodedToken.sub;
                 setUserName(fullName);
 
-                // Construct the initials
                 if (firstName && lastName) {
                     setUserInitials(`${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase());
                 } else if (firstName) {
                     setUserInitials(firstName.charAt(0).toUpperCase());
                 } else {
-                    setUserInitials(''); // Or a default like 'U' for User
+                    setUserInitials('');
                 }
-
             } catch (error) {
                 console.error("Failed to decode token:", error);
-                // Handle invalid token case, e.g., redirect to login
-                // This is already handled by ProtectedRoute, so this is just for added safety
             }
         }
     }, []);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            if (isAuthenticated) {
+                try {
+                    const response = await getNotifications();
+                    const notifications = response.data; // Access the data property
+                    const count = notifications.filter(n => !n.isRead).length;
+                    setUnreadCount(count);
+                } catch (error) {
+                    console.error("Failed to fetch notifications:", error);
+                }
+            }
+        };
+
+        fetchNotifications();
+    }, [isAuthenticated]);
 
     const pageTitles = {
         '/dashboard': 'Tableau de bord',
@@ -47,6 +63,12 @@ const DashboardHeader = () => {
     
     const BackArrowIcon = '/assets/svg/back-arrow-icon.svg';
     const BellIcon = '/assets/svg/bell-icon.svg';
+
+    const handleBellClick = () => {
+        markAllAsRead()
+            .then(() => setUnreadCount(0))
+            .catch(error => console.error("Failed to mark notifications as read:", error));
+    };
 
     return (
         <header className="bg-white p-4 shadow-sm flex items-center justify-between">
@@ -80,6 +102,7 @@ const DashboardHeader = () => {
 
             <div className="flex items-center space-x-4">
                 <button
+                    onClick={handleBellClick}
                     className="flex items-center justify-center relative transition-colors"
                     style={{
                         width: '4.06rem',
@@ -89,6 +112,11 @@ const DashboardHeader = () => {
                     }}
                 >
                     <img src={BellIcon} alt="Notifications" className="w-full h-full object-contain" />
+                    {unreadCount > 0 && (
+                        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                            {unreadCount}
+                        </span>
+                    )}
                 </button>
 
                 <div className="flex items-center">

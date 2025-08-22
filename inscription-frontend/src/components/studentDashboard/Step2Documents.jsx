@@ -3,46 +3,62 @@ import Button from '../common/Button.jsx';
 import FileUploadField from '../common/FileUploadField.jsx';
 
 const Step2Documents = ({ initialData = {}, onSaveAndNext, onSave, onPrevious }) => {
-    const [diplome1, setDiplome1] = useState(initialData.diplome1 || null);
-    const [diplome2, setDiplome2] = useState(initialData.diplome2 || null);
-    const [cniRecto, setCniRecto] = useState(initialData.cniRecto || { file: null, status: null });
-    const [cniVerso, setCniVerso] = useState(initialData.cniVerso || { file: null, status: null });
-    const [acteNaissance, setActeNaissance] = useState(initialData.acteNaissance || { file: null, status: null });
-    const [photoIdentite, setPhotoIdentite] = useState(initialData.photoIdentite || { file: null, status: null });
+    // We'll manage all files in a single state object keyed by their type
+    const [documents, setDocuments] = useState({
+        diplome1: initialData.diplome1 || null,
+        diplome2: initialData.diplome2 || null,
+        cniRecto: initialData.cniRecto || { file: null, status: null },
+        cniVerso: initialData.cniVerso || { file: null, status: null },
+        acteNaissance: initialData.acteNaissance || { file: null, status: null },
+        photoIdentite: initialData.photoIdentite || { file: null, status: null },
+    });
 
     useEffect(() => {
-        setDiplome1(initialData.diplome1 || null);
-        setDiplome2(initialData.diplome2 || null);
-        setCniRecto(initialData.cniRecto || { file: null, status: null });
-        setCniVerso(initialData.cniVerso || { file: null, status: null });
-        setActeNaissance(initialData.acteNaissance || { file: null, status: null });
-        setPhotoIdentite(initialData.photoIdentite || { file: null, status: null });
+        setDocuments({
+            diplome1: initialData.diplome1 || null,
+            diplome2: initialData.diplome2 || null,
+            cniRecto: initialData.cniRecto || { file: null, status: null },
+            cniVerso: initialData.cniVerso || { file: null, status: null },
+            acteNaissance: initialData.acteNaissance || { file: null, status: null },
+            photoIdentite: initialData.photoIdentite || { file: null, status: null },
+        });
     }, [initialData]);
 
-    const handleFileUpload = (setter) => (event) => {
+    const handleFileUpload = (documentType) => (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
-        setter({ file: file, status: 'loading' });
+        // Update the state for the specific document type
+        setDocuments(prevDocs => ({
+            ...prevDocs,
+            [documentType]: { file: file, status: 'loading' }
+        }));
 
+        // Simulate upload/validation process
         setTimeout(() => {
             const newStatus = Math.random() > 0.7 ? 'rejected' : 'validated';
-            setter({ file: file, status: newStatus });
+            setDocuments(prevDocs => ({
+                ...prevDocs,
+                [documentType]: { file: file, status: newStatus }
+            }));
         }, 1500);
     };
 
-    const handleFileDelete = (setter) => () => {
-        setter({ file: null, status: null });
+    const handleFileDelete = (documentType) => () => {
+        setDocuments(prevDocs => ({
+            ...prevDocs,
+            [documentType]: { file: null, status: null }
+        }));
     };
 
     const collectData = () => {
+        // Collect all non-null files into a single list
+        const fileList = Object.values(documents)
+            .filter(doc => doc && doc.file)
+            .map(doc => doc.file);
+
         return {
-            diplome1,
-            diplome2,
-            cniRecto,
-            cniVerso,
-            acteNaissance,
-            photoIdentite,
+            documents: fileList
         };
     };
 
@@ -76,54 +92,54 @@ const Step2Documents = ({ initialData = {}, onSaveAndNext, onSave, onPrevious })
                     id="diplome1"
                     label='Dernier diplôme obtenu "1"'
                     description='Importer un fichier compatible : PDF ou image claire et lisible, max 5Mo'
-                    fileState={{ file: diplome1, status: diplome1 ? 'uploaded' : null }}
-                    onFileChange={handleFileUpload(setDiplome1)}
-                    onDelete={handleFileDelete(setDiplome1)}
+                    fileState={documents.diplome1}
+                    onFileChange={handleFileUpload('diplome1')}
+                    onDelete={handleFileDelete('diplome1')}
                     showActions={false}
                 />
                 <FileUploadField
                     id="diplome2"
                     label='Dernier diplôme obtenu "2" (Facultatif)'
                     description='Importer un fichier compatible : PDF ou image claire et lisible, max 5Mo'
-                    fileState={{ file: diplome2, status: diplome2 ? 'uploaded' : null }}
-                    onFileChange={handleFileUpload(setDiplome2)}
-                    onDelete={handleFileDelete(setDiplome2)}
+                    fileState={documents.diplome2}
+                    onFileChange={handleFileUpload('diplome2')}
+                    onDelete={handleFileDelete('diplome2')}
                     showActions={false}
                 />
                 <FileUploadField
                     id="cniRecto"
                     label='Photocopie CNI Recto'
                     description='Importer un fichier compatible : PDF ou image claire et lisible(JPG/PNG)'
-                    fileState={cniRecto}
-                    onFileChange={handleFileUpload(setCniRecto)}
-                    onDelete={handleFileDelete(setCniRecto)}
+                    fileState={documents.cniRecto}
+                    onFileChange={handleFileUpload('cniRecto')}
+                    onDelete={handleFileDelete('cniRecto')}
                 />
                 <FileUploadField
                     id="cniVerso"
                     label='Photocopie CNI Verso'
                     description='Importer un fichier compatible : PDF ou image claire et lisible(JPG/PNG)'
-                    fileState={cniVerso}
-                    onFileChange={handleFileUpload(setCniVerso)}
-                    onDelete={handleFileDelete(setCniVerso)}
+                    fileState={documents.cniVerso}
+                    onFileChange={handleFileUpload('cniVerso')}
+                    onDelete={handleFileDelete('cniVerso')}
                 />
                 <FileUploadField
                     id="acteNaissance"
                     label='Acte de naissance'
                     description='Importer un fichier compatible : PDF ou image claire et lisible'
-                    fileState={acteNaissance}
-                    onFileChange={handleFileUpload(setActeNaissance)}
-                    onDelete={handleFileDelete(setActeNaissance)}
+                    fileState={documents.acteNaissance}
+                    onFileChange={handleFileUpload('acteNaissance')}
+                    onDelete={handleFileDelete('acteNaissance')}
                 />
                 <FileUploadField
                     id="photoIdentite"
                     label="Photo d'identité 4+4"
                     description='Importer un fichier compatible : PDF ou image claire et lisible'
-                    fileState={photoIdentite}
-                    onFileChange={handleFileUpload(setPhotoIdentite)}
-                    onDelete={handleFileDelete(setPhotoIdentite)}
+                    fileState={documents.photoIdentite}
+                    onFileChange={handleFileUpload('photoIdentite')}
+                    onDelete={handleFileDelete('photoIdentite')}
                 />
             </div>
-
+            
             <div className="flex justify-between gap-4 mt-8">
                 <Button
                     secondary

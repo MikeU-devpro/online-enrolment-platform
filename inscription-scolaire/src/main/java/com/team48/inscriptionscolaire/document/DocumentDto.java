@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 /**
@@ -23,5 +22,5 @@ public class DocumentDto {
     private String contentType;
     private LocalDateTime uploadDate;
     private ValidationStatus validationStatus;
-
+    private String documentType; // Added this field to resolve the error
 }

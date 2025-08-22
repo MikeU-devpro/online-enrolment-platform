@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Button from '../common/Button.jsx';
 
 const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
-    const [nom, setNom] = useState(initialData.nom || '');
-    const [prenom, setPrenom] = useState(initialData.prenom || '');
-    const [sexe, setSexe] = useState(initialData.sexe || '');
-    const [dateNaissance, setDateNaissance] = useState(initialData.dateNaissance || '');
-    const [nationalite, setNationalite] = useState(initialData.nationalite || 'Camerounais');
+    // Map initialData from DTO names to state names
+    const [firstName, setFirstName] = useState(initialData.firstName || '');
+    const [lastName, setLastName] = useState(initialData.lastName || '');
+    const [gender, setGender] = useState(initialData.gender || '');
+    const [dateOfBirth, setDateOfBirth] = useState(initialData.dateOfBirth || '');
+    const [nationality, setNationality] = useState(initialData.nationality || 'Camerounais');
+    // Note: 'typePieceIdentite' is not in the backend DTO, so we keep it locally.
     const [typePieceIdentite, setTypePieceIdentite] = useState(initialData.typePieceIdentite || 'CNI');
 
     useEffect(() => {
-        setNom(initialData.nom || '');
-        setPrenom(initialData.prenom || '');
-        setSexe(initialData.sexe || '');
-        setDateNaissance(initialData.dateNaissance || '');
-        setNationalite(initialData.nationalite || 'Camerounais');
+        setFirstName(initialData.firstName || '');
+        setLastName(initialData.lastName || '');
+        setGender(initialData.gender || '');
+        setDateOfBirth(initialData.dateOfBirth || '');
+        setNationality(initialData.nationality || 'Camerounais');
+        // Keep this local state
         setTypePieceIdentite(initialData.typePieceIdentite || 'CNI');
     }, [initialData]);
 
@@ -32,12 +35,11 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
 
     const collectData = () => {
         return {
-            nom,
-            prenom,
-            sexe,
-            dateNaissance,
-            nationalite,
-            typePieceIdentite
+            firstName,
+            lastName,
+            gender,
+            dateOfBirth,
+            nationality
         };
     };
 
@@ -53,28 +55,28 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
         <>
             <div className="grid grid-cols-1 gap-[1.28rem]">
                 <div>
-                    <label htmlFor="nom" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom</label>
+                    <label htmlFor="firstName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom</label>
                     <input
                         type="text"
-                        id="nom"
+                        id="firstName"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez votre nom"
-                        value={nom}
-                        onChange={(e) => setNom(e.target.value)}
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="prenom" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Prénom</label>
+                    <label htmlFor="lastName" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Prénom</label>
                     <input
                         type="text"
-                        id="prenom"
+                        id="lastName"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez votre prénom"
-                        value={prenom}
-                        onChange={(e) => setPrenom(e.target.value)}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                     />
                 </div>
 
@@ -85,10 +87,10 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                             <input
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
-                                name="sexe"
-                                value="Féminin"
-                                checked={sexe === 'Féminin'}
-                                onChange={(e) => setSexe(e.target.value)}
+                                name="gender"
+                                value="FEMALE"
+                                checked={gender === 'FEMALE'}
+                                onChange={(e) => setGender(e.target.value)}
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Féminin</span>
                         </label>
@@ -96,10 +98,10 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                             <input
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
-                                name="sexe"
-                                value="Masculin"
-                                checked={sexe === 'Masculin'}
-                                onChange={(e) => setSexe(e.target.value)}
+                                name="gender"
+                                value="MALE"
+                                checked={gender === 'MALE'}
+                                onChange={(e) => setGender(e.target.value)}
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Masculin</span>
                         </label>
@@ -107,10 +109,10 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                             <input
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
-                                name="sexe"
-                                value="Non-binaire"
-                                checked={sexe === 'Non-binaire'}
-                                onChange={(e) => setSexe(e.target.value)}
+                                name="gender"
+                                value="NON_BINARY"
+                                checked={gender === 'NON_BINARY'}
+                                onChange={(e) => setGender(e.target.value)}
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Non-binaire</span>
                         </label>
@@ -118,22 +120,22 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                 </div>
 
                 <div>
-                    <label htmlFor="dateNaissance" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Date de naissance</label>
+                    <label htmlFor="dateOfBirth" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Date de naissance</label>
                     <input
                         type="date"
-                        id="dateNaissance"
+                        id="dateOfBirth"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="JJ/MM/AA"
-                        value={dateNaissance}
-                        onChange={(e) => setDateNaissance(e.target.value)}
+                        value={dateOfBirth}
+                        onChange={(e) => setDateOfBirth(e.target.value)}
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="nationalite" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nationalité</label>
+                    <label htmlFor="nationality" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nationalité</label>
                     <select
-                        id="nationalite"
+                        id="nationality"
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333] appearance-none"
                         style={{
                             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236B4F8B' d='M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 10.586l-3.586-3.586L5 8.293z'/%3E%3C/svg%3E")`,
@@ -143,8 +145,8 @@ const Step1PersonalInfo = ({ initialData = {}, onSaveAndNext, onSave }) => {
                             backgroundColor: 'rgba(242, 242, 242, 0.6)',
                             fontSize: '1.5rem'
                         }}
-                        value={nationalite}
-                        onChange={(e) => setNationalite(e.target.value)}
+                        value={nationality}
+                        onChange={(e) => setNationality(e.target.value)}
                     >
                         {centralAfricanNationalities.map(nat => (
                             <option key={nat} value={nat}>{nat}</option>

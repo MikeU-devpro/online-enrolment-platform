@@ -11,9 +11,8 @@ import java.time.LocalDate;
 public class PersonalInfo {
     private String firstName;
     private String lastName;
-    private String Nationality;
+    private String nationality; // Corrected casing to match DTO
     private Gender gender;
     private LocalDate dateOfBirth;
-    //private String phoneNumber;
     // other personal fields
 }

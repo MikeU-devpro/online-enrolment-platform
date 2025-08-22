@@ -32,6 +32,8 @@ public class Document extends BaseEntity {
     private LocalDateTime uploadDate;
     private LocalDateTime validationDate;
 
+    // A new field to categorize the document type (e.g., "diplome1", "cniRecto")
+    private String documentType;
 
     @ManyToOne
     private Enrollment enrollment;

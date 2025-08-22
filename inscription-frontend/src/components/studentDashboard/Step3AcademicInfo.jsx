@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Button from '../common/Button.jsx';
 
 const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious }) => {
+    // Map initialData from DTO names to state names
     const [lastInstitution, setLastInstitution] = useState(initialData.lastInstitution || '');
     const [specialization, setSpecialization] = useState(initialData.specialization || 'Oncogénétique');
-    const [availableForInternship, setAvailableForInternship] = useState(initialData.availableForInternship || '');
+    // Using a boolean for the internship availability
+    const [availableForInternship, setAvailableForInternship] = useState(initialData.availableForInternship || null);
     const [startDate, setStartDate] = useState(initialData.startDate || '');
     const [endDate, setEndDate] = useState(initialData.endDate || '');
 
@@ -12,7 +14,7 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
         if (initialData) {
             setLastInstitution(initialData.lastInstitution || '');
             setSpecialization(initialData.specialization || 'Oncogénétique');
-            setAvailableForInternship(initialData.availableForInternship || '');
+            setAvailableForInternship(initialData.availableForInternship || null);
             setStartDate(initialData.startDate || '');
             setEndDate(initialData.endDate || '');
         }
@@ -35,7 +37,7 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
         return {
             lastInstitution,
             specialization,
-            availableForInternship,
+            availableForInternship, // This will be a boolean
             startDate,
             endDate,
         };
@@ -95,9 +97,9 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
                                 name="availableForInternship"
-                                value="Oui"
-                                checked={availableForInternship === 'Oui'}
-                                onChange={(e) => setAvailableForInternship(e.target.value)}
+                                value={true}
+                                checked={availableForInternship === true}
+                                onChange={() => setAvailableForInternship(true)}
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Oui</span>
                         </label>
@@ -106,9 +108,9 @@ const Step3AcademicInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious
                                 type="radio"
                                 className="form-radio text-[#6B4F8B]"
                                 name="availableForInternship"
-                                value="Non"
-                                checked={availableForInternship === 'Non'}
-                                onChange={(e) => setAvailableForInternship(e.target.value)}
+                                value={false}
+                                checked={availableForInternship === false}
+                                onChange={() => setAvailableForInternship(false)}
                             />
                             <span className="ml-[0.43rem] text-[#333333] text-[1.5rem] font-normal">Non</span>
                         </label>

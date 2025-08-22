@@ -9,14 +9,12 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
     const [region, setRegion] = useState(initialData.region || '');
     const [city, setCity] = useState(initialData.city || '');
     const [address, setAddress] = useState(initialData.address || '');
-    const [emergencyContactName1, setEmergencyContactName1] = useState(initialData.emergencyContactName1 || '');
-    const [emergencyContactPhone1, setEmergencyContactPhone1] = useState(initialData.emergencyContactPhone1 || '');
-    const [emergencyContactCode1, setEmergencyContactCode1] = useState(initialData.emergencyContactCode1 || '+237');
-    const [emergencyContactRelationship1, setEmergencyContactRelationship1] = useState(initialData.emergencyContactRelationship1 || '');
-    const [emergencyContactName2, setEmergencyContactName2] = useState(initialData.emergencyContactName2 || '');
-    const [emergencyContactPhone2, setEmergencyContactPhone2] = useState(initialData.emergencyContactPhone2 || '');
-    const [emergencyContactCode2, setEmergencyContactCode2] = useState(initialData.emergencyContactCode2 || '+237');
-    const [emergencyContactRelationship2, setEmergencyContactRelationship2] = useState(initialData.emergencyContactRelationship2 || '');
+
+    // Refactored to use a single state for emergency contacts
+    const [emergencyContacts, setEmergencyContacts] = useState([
+        initialData.emergencyContacts?.[0] || { name: '', phone: '', code: '+237', relationship: '' },
+        initialData.emergencyContacts?.[1] || { name: '', phone: '', code: '+237', relationship: '' },
+    ]);
 
     useEffect(() => {
         if (initialData) {
@@ -27,18 +25,23 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
             setRegion(initialData.region || '');
             setCity(initialData.city || '');
             setAddress(initialData.address || '');
-            setEmergencyContactName1(initialData.emergencyContactName1 || '');
-            setEmergencyContactPhone1(initialData.emergencyContactPhone1 || '');
-            setEmergencyContactCode1(initialData.emergencyContactCode1 || '+237');
-            setEmergencyContactRelationship1(initialData.emergencyContactRelationship1 || '');
-            setEmergencyContactName2(initialData.emergencyContactName2 || '');
-            setEmergencyContactPhone2(initialData.emergencyContactPhone2 || '');
-            setEmergencyContactCode2(initialData.emergencyContactCode2 || '+237');
-            setEmergencyContactRelationship2(initialData.emergencyContactRelationship2 || '');
+            setEmergencyContacts(initialData.emergencyContacts || [
+                { name: '', phone: '', code: '+237', relationship: '' },
+                { name: '', phone: '', code: '+237', relationship: '' },
+            ]);
         }
     }, [initialData]);
 
     const countryCodes = ['+237', '+33', '+1', '+44', '+49'];
+
+    const handleEmergencyContactChange = (index, field, value) => {
+        const newContacts = [...emergencyContacts];
+        newContacts[index] = {
+            ...newContacts[index],
+            [field]: value
+        };
+        setEmergencyContacts(newContacts);
+    };
 
     const collectData = () => {
         return {
@@ -49,14 +52,7 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
             region,
             city,
             address,
-            emergencyContactName1,
-            emergencyContactPhone1,
-            emergencyContactCode1,
-            emergencyContactRelationship1,
-            emergencyContactName2,
-            emergencyContactPhone2,
-            emergencyContactCode2,
-            emergencyContactRelationship2,
+            emergencyContacts, // Now a list of objects
         };
     };
 
@@ -71,6 +67,7 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
     return (
         <>
             <div className="grid grid-cols-2 gap-x-[1.28rem] gap-y-[1.28rem]">
+                {/* Email and Phone Number */}
                 <div>
                     <label htmlFor="email" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Email</label>
                     <input
@@ -115,6 +112,7 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                     </div>
                 </div>
 
+                {/* Address Fields */}
                 <div>
                     <label htmlFor="country" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Pays</label>
                     <input
@@ -127,7 +125,6 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                         onChange={(e) => setCountry(e.target.value)}
                     />
                 </div>
-
                 <div>
                     <label htmlFor="region" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Région</label>
                     <input
@@ -140,7 +137,6 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                         onChange={(e) => setRegion(e.target.value)}
                     />
                 </div>
-
                 <div>
                     <label htmlFor="city" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Ville</label>
                     <input
@@ -153,7 +149,6 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                         onChange={(e) => setCity(e.target.value)}
                     />
                 </div>
-
                 <div>
                     <label htmlFor="address" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Adresse</label>
                     <input
@@ -167,6 +162,7 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                     />
                 </div>
 
+                {/* Emergency Contact 1 */}
                 <div>
                     <label htmlFor="emergencyContactName1" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom de la personne à contacter en cas d'urgence (1)</label>
                     <input
@@ -175,24 +171,10 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez le nom de la personne à contacter en cas d'urgence"
-                        value={emergencyContactName1}
-                        onChange={(e) => setEmergencyContactName1(e.target.value)}
+                        value={emergencyContacts[0].name}
+                        onChange={(e) => handleEmergencyContactChange(0, 'name', e.target.value)}
                     />
                 </div>
-
-                <div>
-                    <label htmlFor="emergencyContactName2" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom de la personne à contacter en cas d'urgence (2)</label>
-                    <input
-                        type="text"
-                        id="emergencyContactName2"
-                        className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
-                        style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
-                        placeholder="Entrez le nom de la personne à contacter en cas d'urgence"
-                        value={emergencyContactName2}
-                        onChange={(e) => setEmergencyContactName2(e.target.value)}
-                    />
-                </div>
-
                 <div>
                     <label htmlFor="emergencyContactPhone1" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Téléphone de la personne à contacter (1)</label>
                     <div className="flex">
@@ -207,8 +189,8 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                                 backgroundPosition: 'right 0.85rem center',
                                 backgroundSize: '1.28rem',
                             }}
-                            value={emergencyContactCode1}
-                            onChange={(e) => setEmergencyContactCode1(e.target.value)}
+                            value={emergencyContacts[0].code}
+                            onChange={(e) => handleEmergencyContactChange(0, 'code', e.target.value)}
                         >
                             {countryCodes.map(code => <option key={code} value={code}>{code}</option>)}
                         </select>
@@ -218,12 +200,37 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                             className="flex-1 h-[2.98rem] px-[0.85rem] rounded-r-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                             style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                             placeholder="612 345 678"
-                            value={emergencyContactPhone1}
-                            onChange={(e) => setEmergencyContactPhone1(e.target.value)}
+                            value={emergencyContacts[0].phone}
+                            onChange={(e) => handleEmergencyContactChange(0, 'phone', e.target.value)}
                         />
                     </div>
                 </div>
+                <div>
+                    <label htmlFor="emergencyContactRelationship1" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Lien de parenté (1)</label>
+                    <input
+                        type="text"
+                        id="emergencyContactRelationship1"
+                        className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
+                        style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
+                        placeholder="Entrez le lien de parenté"
+                        value={emergencyContacts[0].relationship}
+                        onChange={(e) => handleEmergencyContactChange(0, 'relationship', e.target.value)}
+                    />
+                </div>
 
+                {/* Emergency Contact 2 */}
+                <div>
+                    <label htmlFor="emergencyContactName2" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Nom de la personne à contacter en cas d'urgence (2)</label>
+                    <input
+                        type="text"
+                        id="emergencyContactName2"
+                        className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
+                        style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
+                        placeholder="Entrez le nom de la personne à contacter en cas d'urgence"
+                        value={emergencyContacts[1].name}
+                        onChange={(e) => handleEmergencyContactChange(1, 'name', e.target.value)}
+                    />
+                </div>
                 <div>
                     <label htmlFor="emergencyContactPhone2" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Téléphone de la personne à contacter (2)</label>
                     <div className="flex">
@@ -238,8 +245,8 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                                 backgroundPosition: 'right 0.85rem center',
                                 backgroundSize: '1.28rem',
                             }}
-                            value={emergencyContactCode2}
-                            onChange={(e) => setEmergencyContactCode2(e.target.value)}
+                            value={emergencyContacts[1].code}
+                            onChange={(e) => handleEmergencyContactChange(1, 'code', e.target.value)}
                         >
                             {countryCodes.map(code => <option key={code} value={code}>{code}</option>)}
                         </select>
@@ -249,25 +256,11 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                             className="flex-1 h-[2.98rem] px-[0.85rem] rounded-r-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                             style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                             placeholder="612 345 678"
-                            value={emergencyContactPhone2}
-                            onChange={(e) => setEmergencyContactPhone2(e.target.value)}
+                            value={emergencyContacts[1].phone}
+                            onChange={(e) => handleEmergencyContactChange(1, 'phone', e.target.value)}
                         />
                     </div>
                 </div>
-
-                <div>
-                    <label htmlFor="emergencyContactRelationship1" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Lien de parenté (1)</label>
-                    <input
-                        type="text"
-                        id="emergencyContactRelationship1"
-                        className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
-                        style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
-                        placeholder="Entrez le lien de parenté"
-                        value={emergencyContactRelationship1}
-                        onChange={(e) => setEmergencyContactRelationship1(e.target.value)}
-                    />
-                </div>
-
                 <div>
                     <label htmlFor="emergencyContactRelationship2" className="block text-[#333333] text-[1.5rem] font-normal mb-[0.21rem]">Lien de parenté (2)</label>
                     <input
@@ -276,8 +269,8 @@ const Step4ContactInfo = ({ initialData = {}, onSaveAndNext, onSave, onPrevious 
                         className="w-full h-[2.98rem] px-[0.85rem] rounded-[0.21rem] border border-[#79747E] focus:outline-none focus:ring-2 focus:ring-[#6B4F8B] text-[#333333]"
                         style={{ backgroundColor: 'rgba(242, 242, 242, 0.6)', fontSize: '1.5rem' }}
                         placeholder="Entrez le lien de parenté"
-                        value={emergencyContactRelationship2}
-                        onChange={(e) => setEmergencyContactRelationship2(e.target.value)}
+                        value={emergencyContacts[1].relationship}
+                        onChange={(e) => handleEmergencyContactChange(1, 'relationship', e.target.value)}
                     />
                 </div>
             </div>

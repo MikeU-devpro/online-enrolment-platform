@@ -5,6 +5,7 @@ import Step2Documents from './Step2Documents.jsx';
 import Step3AcademicInfo from './Step3AcademicInfo.jsx';
 import Step4ContactInfo from './Step4ContactInfo.jsx';
 import Step5Summary from './Step5Summary.jsx';
+import { submitEnrollmentForm } from '../../services/enrollmentService';
 
 const BackArrowIcon = '/assets/svg/back-arrow-icon.svg';
 
@@ -45,16 +46,38 @@ const EnrollmentForm = ({ course, onGoBack }) => {
         }
     };
     
-    const handleFinish = () => {
+    // This is the updated function to send data to the backend
+    const handleFinish = async () => {
         const finalData = {
+            // Combine data from all steps into a single object
             ...formData.step1,
             ...formData.step2,
             ...formData.step3,
             ...formData.step4,
+            courseId: course.id, // Include the course ID with the submission
         };
+        
         console.log('Final Form Data for submission:', finalData);
-        alert('Formulaire complet! Données finales soumises.');
-        // Here you would typically send the data to an API
+
+        try {
+            // Call the API service to submit the data
+            const response = await submitEnrollmentForm(finalData);
+
+            // Handle a successful response from the backend
+            if (response.status === 201) { 
+                alert('Formulaire d’inscription soumis avec succès!');
+                console.log('Submission successful:', response.data);
+                // You could add logic here to redirect the user or show a success message
+            }
+        } catch (error) {
+            // Handle any errors that occurred during the API call
+            console.error('Error submitting form:', error.response ? error.response.data : error.message);
+            if (error.response && error.response.status === 400) {
+                alert('Erreur de validation: Veuillez vérifier les données du formulaire.');
+            } else {
+                alert('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
+            }
+        }
     };
 
     let innerBoxWidth;
@@ -63,7 +86,7 @@ const EnrollmentForm = ({ course, onGoBack }) => {
             innerBoxWidth = '52%';
             break;
         case 4:
-        case 5: // Step 5 also uses the larger width
+        case 5:
             innerBoxWidth = '93%';
             break;
         case 2:
@@ -169,7 +192,7 @@ const EnrollmentForm = ({ course, onGoBack }) => {
 
             <div // Inner Form Box - width now conditional based on step
                 style={{
-                    width: innerBoxWidth, // Dynamic width based on step
+                    width: innerBoxWidth,
                     height: 'auto',
                     borderRadius: '0.53rem',
                     paddingTop: '0.85rem',

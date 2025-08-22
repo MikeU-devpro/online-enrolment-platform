@@ -17,10 +17,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Enrollment extends BaseEntity {
+
     private String academicYear;
-    private LocalDateTime submissionDate = LocalDateTime.now();
+    private LocalDateTime submissionDate;
+
+    @Enumerated(EnumType.STRING)
     private StatusSubmission status;
+
     private LocalDateTime validationDate;
+    private String rejectionReason; // New field to store the reason for rejection
 
     @ManyToOne
     private Student student;
@@ -30,7 +35,6 @@ public class Enrollment extends BaseEntity {
 
     @ManyToOne
     private Program program;
-
 
     @Embedded
     private PersonalInfo personalInfo;
@@ -42,5 +46,4 @@ public class Enrollment extends BaseEntity {
     private ContactDetails contactDetails;
 
     private int stepCompleted;
-
 }
