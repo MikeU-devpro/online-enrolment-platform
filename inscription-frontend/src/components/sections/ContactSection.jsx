@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import WaveSeparatorInverted from '../common/WaveSeparatorInverted';
 
 const ContactSection = () => {
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const [status, setStatus] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      await axios.post('http://localhost:8091/api/v1/contact', formData);
+      setStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' }); 
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus('error');
+    }
+  };
+
   return (
     <section
       className="relative mt-[-20] pt-60 md:pt-80 pb-40 md:pb-60 bg-cover bg-no-repeat bg-center flex flex-col items-center justify-end overflow-hidden"
@@ -67,7 +100,7 @@ const ContactSection = () => {
                      w-[26.67rem] h-[33.33rem] min-w-[21.33rem] rounded-lg /* Converted px to rem, rounded-lg is 0.5rem */
                      top-[4.98rem] left-[44.2rem] /* Converted px to rem (707.2px / 16 = 44.2rem) */"
         >
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Nom</label>
               <input
@@ -75,6 +108,8 @@ const ContactSection = () => {
                 id="name"
                 name="name"
                 placeholder="Ex: Ignite Academy"
+                value={formData.name}
+                onChange={handleChange}
                 className="shadow appearance-none rounded w-[23.47rem] h-[2.6rem] text-gray-700 leading-tight focus:outline-none focus:shadow-outline
                            py-2 px-4 border-t-[0.07rem] border-solid border-[#D9D9D9] /* Converted px to rem/standard Tailwind */"
               />
@@ -86,6 +121,8 @@ const ContactSection = () => {
                 id="email"
                 name="email"
                 placeholder="Ex: contact@igniteacademy.com"
+                value={formData.email}
+                onChange={handleChange}
                 className="shadow appearance-none rounded w-[23.47rem] h-[2.6rem] text-gray-700 leading-tight focus:outline-none focus:shadow-outline
                            py-2 px-4 border-t-[0.07rem] border-solid border-[#D9D9D9] /* Converted px to rem/standard Tailwind */"
               />
@@ -97,6 +134,8 @@ const ContactSection = () => {
                 id="subject"
                 name="subject"
                 placeholder="L'objet de votre message"
+                value={formData.subject}
+                onChange={handleChange}
                 className="shadow appearance-none rounded w-[23.47rem] h-[2.6rem] text-gray-700 leading-tight focus:outline-none focus:shadow-outline
                            py-2 px-4 border-t-[0.07rem] border-solid border-[#D9D9D9] /* Converted px to rem/standard Tailwind */"
               />
@@ -108,6 +147,8 @@ const ContactSection = () => {
                 name="message"
                 rows="5"
                 placeholder="Votre message"
+                value={formData.message}
+                onChange={handleChange}
                 className="shadow appearance-none rounded w-[23.47rem] h-[5.33rem] min-h-[5.33rem] text-gray-700 leading-tight focus:outline-none focus:shadow-outline
                            py-2 px-4 border-t-[0.07rem] border-solid border-[#D9D9D9] /* Converted px to rem/standard Tailwind */"
               ></textarea>
@@ -118,10 +159,14 @@ const ContactSection = () => {
                          w-[23.47rem] h-[3.04rem] rounded-lg /* Converted px to rem, rounded-lg is 0.5rem */
                          py-2 px-2 /* Converted 8px padding to py-2 px-2 */
                          border-t-[0.07rem] border-solid border-[#101957]"
+              disabled={status === 'sending'}
             >
-              Envoyer
+              {status === 'sending' ? 'Envoi en cours...' : 'Envoyer'}
             </button>
           </form>
+          
+          {status === 'success' && <p className="mt-4 text-green-500">Message envoyé avec succès !</p>}
+          {status === 'error' && <p className="mt-4 text-red-500">Échec de l'envoi du message. Veuillez réessayer.</p>}
         </div>
       </div>
     </section>
