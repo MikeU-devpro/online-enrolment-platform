@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,6 @@ public class AuthenticationService {
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
     private final JwtService jwtService;
-
 
     public void register(RegistrationRequest request) throws MessagingException {
         if (!List.of("STUDENT", "ADMIN").contains(request.getRoleName())) {
@@ -202,6 +202,21 @@ public class AuthenticationService {
     }
 
     // ===================================================================================
+    // ================= NOUVELLE MÉTHODE POUR LE MOT DE PASSE OUBLIÉ ===================
+    // ===================================================================================
+
+    public void initiatePasswordReset(String email) throws MessagingException {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // Re-use the existing token and email sending logic
+            sendValidationEmail(user);
+        }
+        // If the user doesn't exist, we do nothing to prevent user enumeration attacks.
+    }
+
+    // ===================================================================================
     // ================= MÉTHODE DE DÉCONNEXION AJOUTÉE ===================================
     // ===================================================================================
 
@@ -227,5 +242,4 @@ public class AuthenticationService {
             SecurityContextHolder.clearContext(); // Nettoie le contexte de sécurité
         }
     }
-
 }

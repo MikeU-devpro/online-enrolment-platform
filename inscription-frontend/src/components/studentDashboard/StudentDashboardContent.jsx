@@ -57,7 +57,7 @@ const StudentDashboardContent = () => {
         {
             id: '9',
             title: 'Géologie',
-            description: 'Créativité visuelle et principes du design graphique.',
+            description: 'Etude de la structure et de l\'évolution de l\'écorce terrestre.',
             imageUrl: '/assets/images/filiere-geologie.jpg'
         },
     ]);

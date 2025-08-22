@@ -45,6 +45,17 @@ public class AuthenticationController {
     }
 
     // ===================================================================================
+    // =================== NOUVEL ENDPOINT DE MOT DE PASSE OUBLIÉ ========================
+    // ===================================================================================
+
+    @PostMapping("/forgot-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<Void> forgotPassword(@RequestBody @Valid PasswordResetRequest request) throws MessagingException {
+        service.initiatePasswordReset(request.getEmail());
+        return ResponseEntity.accepted().build();
+    }
+
+    // ===================================================================================
     // =================== ENDPOINT DE DÉCONNEXION AJOUTÉ ================================
     // ===================================================================================
 

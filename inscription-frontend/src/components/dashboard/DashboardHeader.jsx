@@ -1,23 +1,50 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-const DashboardHeader = ({ pageTitle }) => {
+const DashboardHeader = () => {
     const navigate = useNavigate();
-    const { user } = useContext(UserContext);
+    const location = useLocation();
+    const [userName, setUserName] = useState('');
+    const [userInitials, setUserInitials] = useState('');
 
-    const displayUserName = user?.name || 'Nom associé à l\'email';
+    useEffect(() => {
+        const token = localStorage.getItem('jwt_token');
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                const firstName = decodedToken.firstname || '';
+                const lastName = decodedToken.lastname || '';
+                
+                // Construct the full name
+                const fullName = (firstName && lastName) ? `${firstName} ${lastName}` : decodedToken.sub;
+                setUserName(fullName);
 
-    let userInitials = '';
-    if (user && user.name) {
-        const nameParts = user.name.split(' ');
-        if (nameParts.length > 1) {
-            userInitials = `${nameParts[0].charAt(0)}${nameParts[1].charAt(0)}`.toUpperCase();
-        } else {
-            userInitials = nameParts[0].charAt(0).toUpperCase();
+                // Construct the initials
+                if (firstName && lastName) {
+                    setUserInitials(`${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase());
+                } else if (firstName) {
+                    setUserInitials(firstName.charAt(0).toUpperCase());
+                } else {
+                    setUserInitials(''); // Or a default like 'U' for User
+                }
+
+            } catch (error) {
+                console.error("Failed to decode token:", error);
+                // Handle invalid token case, e.g., redirect to login
+                // This is already handled by ProtectedRoute, so this is just for added safety
+            }
         }
-    }
+    }, []);
 
+    const pageTitles = {
+        '/dashboard': 'Tableau de bord',
+        '/dashboard/faq': 'FAQ',
+        '/dashboard/help': 'Aide',
+    };
+    
+    const pageTitle = pageTitles[location.pathname] || 'Tableau de bord';
+    
     const BackArrowIcon = '/assets/svg/back-arrow-icon.svg';
     const BellIcon = '/assets/svg/bell-icon.svg';
 
@@ -47,7 +74,7 @@ const DashboardHeader = ({ pageTitle }) => {
                         color: '#1A202C',
                     }}
                 >
-                    {pageTitle || 'Tableau de bord'}
+                    {pageTitle}
                 </h1>
             </div>
 
@@ -87,7 +114,7 @@ const DashboardHeader = ({ pageTitle }) => {
                                 color: '#333333',
                             }}
                         >
-                            {displayUserName}
+                            {userName}
                         </p>
                     </div>
                 </div>

@@ -82,8 +82,6 @@ function App() {
                 {/* Student Dashboard Routes */}
                 <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboardLayout /></ProtectedRoute>}>
                     <Route index element={<StudentDashboardContent />} />
-                    <Route path="messages" element={<div>Messagerie pour étudiant</div>} /> {/* Placeholder */}
-                    <Route path="settings" element={<div>Paramètres pour étudiant</div>} /> {/* Placeholder */}
                     <Route path="faq" element={<StudentFAQ />} />
                     <Route path="help" element={<StudentHelp />} />
                 </Route>
@@ -99,8 +97,6 @@ function App() {
                     <Route path="user-management" element={<UserManagement />} />
                     <Route path="user-management/add" element={<UserForm />} />
                     <Route path="user-management/edit/:id" element={<UserForm />} />
-                    <Route path="messages" element={<div>Messagerie pour administrateur</div>} />
-                    <Route path="settings" element={<div>Paramètres pour administrateur</div>} />
                     <Route path="faq" element={<AdminFAQ />} />
                     <Route path="help" element={<AdminHelp />} />
                 </Route>
