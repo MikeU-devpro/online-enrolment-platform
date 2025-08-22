@@ -1,9 +1,9 @@
-import React from 'react';
 import Button from './Button';
+import { Link } from 'react-router-dom';
 
 const pxToRem = (px) => `${(px / 16).toFixed(2)}rem`;
 
-const CourseCard = ({ image, title, description}) => {
+const CourseCard = ({ image, title, description, link }) => {
   return (
     <div
       className="bg-white overflow-hidden flex flex-col relative"
@@ -73,7 +73,9 @@ const CourseCard = ({ image, title, description}) => {
         </p>
 
         <div className="" >
-          <Button tertiary size="md">En savoir plus</Button>
+          <Link to={link}>
+            <Button tertiary size="md">En savoir plus</Button>
+          </Link>
         </div>
       </div>
     </div>

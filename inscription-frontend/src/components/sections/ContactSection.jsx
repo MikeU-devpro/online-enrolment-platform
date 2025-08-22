@@ -7,13 +7,14 @@ const ContactSection = () => {
       className="relative mt-[-20] pt-60 md:pt-80 pb-40 md:pb-60 bg-cover bg-no-repeat bg-center flex flex-col items-center justify-end overflow-hidden"
       style={{ backgroundImage: "url('/assets/images/contact-section-bg.png')" }}
     >
-
+      
+      {/*
       <div className="absolute top-0 left-0 w-full h-[20vh] md:h-[25vh] z-10">
         <WaveSeparatorInverted />
       </div>
+      */}
 
       <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
-
 
       <h2
         className="absolute left-[6.25rem] text-white z-20
@@ -28,6 +29,7 @@ const ContactSection = () => {
         className="relative z-40 mx-auto bg-white overflow-hidden flex flex-col md:flex-row
                    w-[75rem] h-[43.33rem] rounded-[0.8rem] /* Converted px to rem */
                    shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+        style={{ bottom: '20%' }}
       >
 
         <div

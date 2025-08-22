@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import CourseDetail from './pages/CourseDetail'; // This import was missing!
+
 
 // Admin Dashboard Imports
 import AdminDashboardLayout from './components/adminDashboard/AdminDashboardLayout';
@@ -74,6 +76,7 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                     <Route path="/verify-email" element={<VerifyEmailPage />} />
+                    <Route path="/courses/:courseName" element={<CourseDetail />} />
                 </Route>
                 
                 {/* Student Dashboard Routes */}

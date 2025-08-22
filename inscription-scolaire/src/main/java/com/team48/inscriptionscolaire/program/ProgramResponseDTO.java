@@ -14,4 +14,5 @@ public class ProgramResponseDTO {
     private int maxCapacity;
     private LocalDate registrationStartDate;
     private LocalDate registrationEndDate;
+    private String image;
 }

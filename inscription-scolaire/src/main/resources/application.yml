@@ -4,7 +4,6 @@ server:
   servlet:
     context-path: "/api/v1"
 
-
 #configure spring datasource,jpa, mail and servlet
 spring:
   datasource:
