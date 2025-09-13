@@ -44,9 +44,6 @@ public class User implements UserDetails, Principal {
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private List<Notification> notifications;
-
 
     @CreatedDate
     @Column(updatable = false)

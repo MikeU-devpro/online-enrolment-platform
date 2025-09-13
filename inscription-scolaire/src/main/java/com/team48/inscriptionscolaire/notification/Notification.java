@@ -20,11 +20,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification extends BaseEntity {
-    private String subject;
-    private String message;
-    private LocalDateTime sendDate;
-    private boolean isRead;
-    private Integer referenceId;
-    @ManyToOne
-    private User user;
+   private String content;
 }
