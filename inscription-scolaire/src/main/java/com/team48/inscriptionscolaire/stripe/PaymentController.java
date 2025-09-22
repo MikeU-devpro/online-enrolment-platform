@@ -1,58 +1,51 @@
 package com.team48.inscriptionscolaire.stripe;
 
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/payment")
-@CrossOrigin("http://localhost:63342")
+@CrossOrigin(origins = "http://localhost:5173")
+@RequiredArgsConstructor
 public class PaymentController {
 
+    private final PaymentService paymentService;
+
+    /**
+     * Creates a Stripe checkout session.
+     * @param requestDto DTO containing payment details like amount and enrollmentId.
+     * @return A DTO with the Stripe session ID, or an error status.
+     */
     @PostMapping("/create-checkout-session")
-    public Map<String, Object> createCheckoutSession() throws StripeException {
-
-        SessionCreateParams params = SessionCreateParams.builder()
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.ALIPAY)
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8091/api/v1/payment/sucess")
-                .setCancelUrl("http://localhost:8091/api/v1/payment/cancel")
-                .addLineItem(
-                        SessionCreateParams.LineItem.builder()
-                                .setPriceData(
-                                        SessionCreateParams.LineItem.PriceData.builder()
-                                                .setCurrency("usd")
-                                                .setUnitAmount(100L)
-                                                .setProductData(
-                                                        SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                .setName("Test Product")
-                                                                .build())
-                                                .build()
-                                )
-                                .setQuantity(1L)
-                                .build()
-                )
-                .build();
-
-        Session session = Session.create(params);
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        result.put("sessionId", session.getId());
-
-        return ResponseEntity.ok(result).getBody();
+    public ResponseEntity<PaymentResponseDto> createCheckoutSession(@RequestBody PaymentRequestDto requestDto) {
+        try {
+            PaymentResponseDto response = paymentService.createStripeSession(requestDto);
+            return ResponseEntity.ok(response);
+        } catch (StripeException e) {
+            // It's a good practice to log the exception
+            // log.error("StripeException in createCheckoutSession: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null); // Or return an error DTO
+        }
     }
 
-    @GetMapping("/sucess")
+    /**
+     * Endpoint for successful payment redirection.
+     * In a real app, this would be a frontend route.
+     */
+    @GetMapping("/success")
     public String getSuccess(){
         return "payment successful";
     }
 
+    /**
+     * Endpoint for canceled payment redirection.
+     * In a real app, this would be a frontend route.
+     */
     @GetMapping("/cancel")
     public String getCancel(){
         return "payment canceled";

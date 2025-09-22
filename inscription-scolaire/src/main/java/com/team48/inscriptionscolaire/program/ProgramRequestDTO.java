@@ -13,4 +13,5 @@ public class ProgramRequestDTO {
     private int maxCapacity;
     private LocalDate registrationStartDate;
     private LocalDate registrationEndDate;
+    private String image; //
 }

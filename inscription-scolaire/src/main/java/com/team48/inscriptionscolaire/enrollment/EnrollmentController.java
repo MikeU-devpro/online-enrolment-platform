@@ -1,7 +1,7 @@
 package com.team48.inscriptionscolaire.enrollment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,61 +23,62 @@ import java.util.List;
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
-    // NOUVEAU : Endpoint pour créer/mettre à jour les données de l'inscription (sans fichiers)
-    @PostMapping
+    /**
+     * Unified endpoint to handle all steps of the enrollment form, including data and documents.
+     */
+    @Operation(summary = "Submit or update enrollment form data and documents")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Enrollment created or updated successfully",
+                    content = @Content(schema = @Schema(implementation = EnrollmentDtoResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<EnrollmentDtoResponse> createOrUpdateEnrollment(@RequestBody EnrollmentDtoRequest enrollmentDtoRequest) {
-        EnrollmentDtoResponse response = enrollmentService.createOrUpdateEnrollment(enrollmentDtoRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+    public ResponseEntity<EnrollmentDtoResponse> submitEnrollment(
+            @RequestPart("enrollmentDtoRequest") String enrollmentDtoRequestJson,
+            @RequestPart(value = "documents", required = false) List<MultipartFile> documents) throws JsonProcessingException {
 
-    // MODIFIÉ : Endpoint dédié uniquement au téléversement de documents
-    @PostMapping(value = "/{enrollmentId}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Void> uploadDocuments(
-            @PathVariable Integer enrollmentId,
-            @RequestParam("documents") List<MultipartFile> documents) {
-        enrollmentService.addDocumentsToEnrollment(enrollmentId, documents);
-        return ResponseEntity.ok().build();
+        EnrollmentDtoRequest dto = enrollmentService.parseEnrollmentJson(enrollmentDtoRequestJson);
+        EnrollmentDtoResponse response = enrollmentService.processEnrollment(dto, documents);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{enrollmentId}")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public EnrollmentDtoResponse getEnrollment(@PathVariable Integer enrollmentId) {
         return enrollmentService.getEnrollmentById(enrollmentId);
     }
 
-    /*@PostMapping("/{enrollmentId}/documents")
-    public EnrollmentDtoResponse uploadDocuments(
-            @PathVariable Integer enrollmentId,
-            @RequestParam("files") List<MultipartFile> files) {
-        EnrollmentDtoRequest dto = new EnrollmentDtoRequest();
-        dto.setCurrentStep(3);
-        dto.setDocumentFiles(files);
-        return enrollmentService.startEnrollment(dto);
-    }*/
-
     @GetMapping("/my-enrollments")
+    @PreAuthorize("hasRole('STUDENT')")
     public List<EnrollmentDtoResponse> getMyEnrollments() {
         return enrollmentService.getMyEnrollments();
     }
 
+    // Admin endpoints (kept as is)
     @GetMapping("/program/{programId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<EnrollmentDtoResponse> getEnrollmentsByProgram(@PathVariable Integer programId) {
         return enrollmentService.getEnrollmentsByProgram(programId);
     }
 
-    @PatchMapping("/{enrollmentId}/validate")
+    // FIX: Changed from 'validateEnrollment' to 'approveEnrollment' to match the EnrollmentService
+    @PatchMapping("/{enrollmentId}/approve")
     @PreAuthorize("hasRole('ADMIN')")
-    public EnrollmentDtoResponse validateEnrollment(@PathVariable Integer enrollmentId) {
-        return enrollmentService.validateEnrollment(enrollmentId);
+    public EnrollmentDtoResponse approveEnrollment(@PathVariable Integer enrollmentId) {
+        return enrollmentService.approveEnrollment(enrollmentId);
     }
 
     @GetMapping("/year/{academicYear}")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<EnrollmentDtoResponse> getEnrollmentsByYear(@PathVariable String academicYear) {
         return enrollmentService.getEnrollmentsByYear(academicYear);
     }
 
     @GetMapping("/program/{programId}/year/{academicYear}")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<EnrollmentDtoResponse> getEnrollmentsByProgramAndYear(
             @PathVariable Integer programId,
             @PathVariable String academicYear) {
@@ -86,11 +86,11 @@ public class EnrollmentController {
     }
 
     @GetMapping("/available-academic-years")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public List<String> getAvailableAcademicYears() {
         int currentYear = LocalDate.now().getYear();
         List<String> years = new ArrayList<>();
 
-        // Génère les 3 prochaines années académiques
         for (int i = 0; i < 3; i++) {
             years.add((currentYear + i) + "-" + (currentYear + i + 1));
         }

@@ -6,6 +6,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import com.team48.inscriptionscolaire.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,11 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
+        if (userDetails instanceof User) {
+            User user = (User) userDetails;
+            claims.put("firstname", user.getFirstname());
+            claims.put("lastname", user.getLastname());
+        }
         return buildToken(claims, userDetails, jwtExpiration);
     }
 

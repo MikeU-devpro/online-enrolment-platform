@@ -22,6 +22,12 @@ public class ProgramService {
         return ProgramMapper.toDto(programRepository.save(program));
     }
 
+    public ProgramResponseDTO getProgramByCode(String programCode) {
+        return programRepository.findByProgramCode(programCode)
+                .map(ProgramMapper::toDto)
+                .orElseThrow(() -> new RuntimeException("Program not found with code: " + programCode));
+    }
+
     public List<ProgramResponseDTO> getAllPrograms() {
         return programRepository.findAll().stream()
                 .map(ProgramMapper::toDto)

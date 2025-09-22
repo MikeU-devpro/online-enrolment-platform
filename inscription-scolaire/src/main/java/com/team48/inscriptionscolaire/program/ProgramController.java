@@ -33,6 +33,11 @@ public class ProgramController {
         return ResponseEntity.ok(programService.getProgramById(id));
     }
 
+    @GetMapping("/code/{programCode}")
+    public ResponseEntity<ProgramResponseDTO> getProgramByCode(@PathVariable String programCode) {
+        return ResponseEntity.ok(programService.getProgramByCode(programCode));
+    }
+
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

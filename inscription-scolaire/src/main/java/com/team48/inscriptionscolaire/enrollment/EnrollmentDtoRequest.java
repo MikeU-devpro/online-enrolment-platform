@@ -1,11 +1,13 @@
 package com.team48.inscriptionscolaire.enrollment;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
+/**
+ * A Data Transfer Object (DTO) for handling enrollment form data from the frontend.
+ * This DTO represents the JSON part of a multipart request.
+ */
 @Data
 public class EnrollmentDtoRequest {
     private Integer programId;
@@ -14,7 +16,4 @@ public class EnrollmentDtoRequest {
     private PersonalInfoDto personalInfo;
     private AcademicInfoDto academicInfo;
     private ContactDetailsDto contactDetails;
-
-    /*@Schema(type = "array", format = "binary")
-    private transient List<MultipartFile> documentFiles;*/
 }

@@ -24,5 +24,6 @@ public class EnrollmentDtoResponse {
     private AcademicInfoDto academicInfo;
     private List<DocumentDto> documents;
     private ContactDetailsDto contactDetails;
+    private String rejectionReason;
     //private EnrollmentStepDto enrollmentStepDto;
 }

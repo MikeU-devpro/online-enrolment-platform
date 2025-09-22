@@ -25,6 +25,8 @@ public class ProgramMapper {
         dto.setMaxCapacity(program.getMaxCapacity());
         dto.setRegistrationStartDate(program.getRegistrationStartDate());
         dto.setRegistrationEndDate(program.getRegistrationEndDate());
+        String imagePath = "/assets/images/" + program.getProgramCode() + ".png";
+        dto.setImage(imagePath);
         return dto;
     }
 }

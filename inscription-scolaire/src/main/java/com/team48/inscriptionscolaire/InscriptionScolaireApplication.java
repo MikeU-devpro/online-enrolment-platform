@@ -4,14 +4,18 @@ import com.team48.inscriptionscolaire.program.Program;
 import com.team48.inscriptionscolaire.program.ProgramRepository;
 import com.team48.inscriptionscolaire.role.Role;
 import com.team48.inscriptionscolaire.role.RoleRepository;
+import com.team48.inscriptionscolaire.user.User;
+import com.team48.inscriptionscolaire.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 public class InscriptionScolaireApplication {
@@ -28,6 +32,39 @@ public class InscriptionScolaireApplication {
             }
             if (roleRepository.findByName("ADMIN").isEmpty()) {
                 roleRepository.save(Role.builder().name("ADMIN").build());
+            }
+        };
+    }
+
+    // --- NOUVEAU BEAN POUR CRÉER L'ADMIN ---
+    @Bean
+    CommandLineRunner initAdminUser(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            String adminEmail = "menzepohyvesseraphin@gmail.com";
+
+            // 1. Vérifier si l'admin existe déjà
+            if (userRepository.findByEmail(adminEmail).isEmpty()) {
+
+                // 2. Récupérer le rôle ADMIN (qui doit exister grâce au bean précédent)
+                Role adminRole = roleRepository.findByName("ADMIN")
+                        .orElseThrow(() -> new RuntimeException("Error: ADMIN role not found."));
+
+                // 3. Créer le nouvel utilisateur administrateur
+                User adminUser = User.builder()
+                        .firstname("Admin")
+                        .lastname("User")
+                        .email(adminEmail)
+                        .password(passwordEncoder.encode("admin12345")) // Mot de passe à changer
+                        .role(adminRole) // Utiliser un Set pour les rôles
+                        .enabled(true) // <-- ICI ON ACTIVE LE COMPTE DIRECTEMENT
+                        .accountLocked(false)
+                        .build();
+
+                // 4. Sauvegarder l'admin dans la base de données
+                userRepository.save(adminUser);
+                System.out.println(">>> Administrateur par défaut créé et activé avec succès !");
+            } else {
+                System.out.println(">>> L'administrateur par défaut existe déjà.");
             }
         };
     }
