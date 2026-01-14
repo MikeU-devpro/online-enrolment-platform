@@ -1,0 +1,76 @@
+#configure server
+server:
+  port: 8091
+  servlet:
+    context-path: "/api/v1"
+
+
+#configure spring datasource,jpa, mail and servlet
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inscription_db
+    username: postgres
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lenguesandra@gmail.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+
+
+
+#configure application
+application:
+  upload:
+    allowed-file-types:
+      - application/pdf
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      - image/jpeg
+      - image/png
+    allowed-extensions: [ pdf, docx, jpg, jpeg, png ]
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY}
+      expiration: 3600000 #1h
+  mailing:
+    frontend:
+      activation-url: http://localhost:5173/activate-account
+
+#configure springdoc (swagger)
+springdoc:
+  default-produces-media-type: application/json
+
+
+#configure stripe paiement integration
+stripe:
+  secret:
+    key: ${STRIPE_SECRET_KEY}
+  public:
+    key: ${STRIPE_PUBLIC_KEY}
+
+
+
